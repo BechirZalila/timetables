@@ -1,0 +1,74 @@
+% $Id$
+\documentclass{article}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{array}
+\usepackage{pdflscape}
+\usepackage{diagbox}
+\usepackage{color}
+
+\begin{document}
+
+\newcommand{\formathour}[1]{\textbf{#1}}
+\newcommand{\hourone}{\formathour{8:15 $\rightarrow$ 10:15}}
+\newcommand{\hourtwo}{\formathour{10:30 $\rightarrow$ 12:30}}
+\newcommand{\hourthree}{\formathour{14:00 $\rightarrow$ 16:00}}
+\newcommand{\hourfour}{\formathour{16:15 $\rightarrow$ 18:15}}
+
+\newcommand{\formatday}[1]{\textbf{#1}}
+\newcommand{\lundi}{\formatday{Lundi}}
+\newcommand{\mardi}{\formatday{Mardi}}
+\newcommand{\mercredi}{\formatday{Mercredi}}
+\newcommand{\jeudi}{\formatday{Jeudi}}
+\newcommand{\vendredi}{\formatday{Vendredi}}
+\newcommand{\samedi}{\formatday{Samedi}}
+
+\newcommand{\formatdh}[1]{\textbf{#1}}
+\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=2pt,linecolor=blue,width=5.4cm,height=1.9cm]{\footnotesize{\textbf{#1}}}{\footnotesize{\textbf{#2}}}}}
+
+\newcommand{\lundione}{\formatdhh{lundi}{one}}
+\newcommand{\lunditwo}{\formatdhh{lundi}{two}}
+\newcommand{\lundithree}{\formatdhh{lundi}{three}}
+\newcommand{\lundifour}{\formatdhh{lundi}{four}}
+\newcommand{\mardione}{\formatdh{mardi}}
+\newcommand{\marditwo}{\formatdhh{mardi}{two}}
+\newcommand{\mardithree}{\formatdhh{mardi}{three}}
+\newcommand{\mardifour}{\formatdhh{mardi}{four}}
+\newcommand{\mercredione}{\formatdhh{mercredi}{one}}
+\newcommand{\mercreditwo}{\formatdhh{mercredi}{two}}
+\newcommand{\mercredithree}{\formatdhh{mercredi}{three}}
+\newcommand{\mercredifour}{\formatdhh{mercredi}{four}}
+\newcommand{\jeudione}{\formatdhh{jeudi}{one}}
+\newcommand{\jeuditwo}{\formatdhh{jeudi}{two}}
+\newcommand{\jeudithree}{\formatdhh{jeudi}{three}}
+\newcommand{\jeudifour}{\formatdhh{jeudi}{four}}
+\newcommand{\vendredione}{\formatdhh{vendredi}{one}}
+\newcommand{\vendreditwo}{\formatdhh{vendredi}{two}}
+\newcommand{\vendredithree}{\formatdhh{vendredi}{three}}
+\newcommand{\vendredifour}{\formatdhh{vendredi}{four}}
+\newcommand{\samedione}{\formatdhh{samedi}{one}}
+\newcommand{\sameditwo}{\formatdhh{samedi}{two}}
+\newcommand{\samedithree}{\formatdhh{samedi}{three}}
+\newcommand{\samedifour}{\formatdhh{samedi}{four}}
+
+%\backslashbox{Room}{Date}
+%\slashbox{Room}{Date}
+\pagestyle{empty}
+\begin{landscape}
+
+  \newcolumntype{D}    { >{\centering\arraybackslash} m{2cm} }
+  \newcolumntype{H}    { >{\centering\arraybackslash} m{5cm} }
+  \newcolumntype{X}{@{}m{0pt}@{}} % Dummy column due to a bug in latex
+  
+  \begin{center}
+    \begin{tabular}{|D||H|H||H|H|X}\hline
+      & \hourone{} & \hourtwo{} & \hourthree{} & \hourfour{} &\\[1cm]\hline
+      \lundi{} & \lundione{} & \lunditwo{} & \lundithree{} & \lundifour{} &\\[1.5cm]\hline
+\mardi{} & \mardione{} & \marditwo{} & \mardithree{} & \mardifour{} &\\[1.5cm]\hline
+\mercredi{} & \mercredione{} & \mercreditwo{} & \mercredithree{} & \mercredifour{} &\\[1.5cm]\hline
+\jeudi{} & \jeudione{} & \jeuditwo{} & \jeudithree{} & \jeudifour{} &\\[1.5cm]\hline
+\vendredi{} & \vendredione{} & \vendreditwo{} & \vendredithree{} & \vendredifour{} &\\[1.5cm]\hline
+\samedi{} & \samedione{} & \sameditwo{} & \samedithree{} & \samedifour{} &\\[1.5cm]\hline
+    \end{tabular}
+  \end{center}
+\end{landscape}
+\end{document} 
