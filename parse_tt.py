@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # $Id$
 
+import sys
 from xml.etree import ElementTree as et
 
 r_dict = {}
@@ -255,6 +256,12 @@ tt_h_trans = {
     '16:15 - 18:15 B' : 'four'
 }
 
+def filterTags (tags):
+    return [t for t in tags if t[1] != '1']
+
+def filterTeachers (teachers):
+    return [t for t in teachers if t[:3] != 'ZZZ']
+
 def Gen_Teacher_H_Data (d, d_dict, h):
     hA = h + ' A'
     hB = h + ' B'
@@ -284,7 +291,7 @@ def Gen_Teacher_H_Data (d, d_dict, h):
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         studentsB = ', '.join(actB['students'])
         subjectB = actB['subject']
-        tagsB = ', '.join(actB['tags'])
+        tagsB = ', '.join(filterTags(actB['tags']))
         roomB = actB ['room']
         print ('\\newcommand{\\' +
                tt_d_trans[d] +
@@ -296,12 +303,12 @@ def Gen_Teacher_H_Data (d, d_dict, h):
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         studentsA = ', '.join(actA['students'])
         subjectA = actA['subject']
-        tagsA = ', '.join(actA['tags'])
+        tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        studentsB = ', '.join(actB['students'])
+        studentsB = ', '.join(filterTags (actB['students']))
         subjectB = actB['subject']
-        tagsB = ', '.join(actB['tags'])
+        tagsB = ', '.join(filterTags (actB['tags']))
         roomB = actB ['room']
         print ('\\newcommand{\\' +
                tt_d_trans[d] +
@@ -315,7 +322,7 @@ def Gen_Teacher_H_Data (d, d_dict, h):
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         studentsA = ', '.join(actA['students'])
         subjectA = actA['subject']
-        tagsA = ', '.join(actA['tags'])
+        tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
         durationA = actA ['duration']
         if durationA == 2:
@@ -331,10 +338,148 @@ def Gen_Teacher_H_Data (d, d_dict, h):
                tt_h_trans[h] +
                '}{\\formatdhh{' +
                subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
-               '}{}')
+               '}{}}')
     else:
-        raise Exception ('InsertActivity', actA)
-        
+        raise Exception ('Gen_Teacher_H_Data', actA)
+
+def Gen_Subgroup_H_Data (d, d_dict, h):
+    hA = h + ' A'
+    hB = h + ' B'
+
+    # 5 cas:
+
+    # 1 - Les deux créneaux sont vides, on gènère une cellule grise
+
+    # 2 - Le créneau A est vide et le créneau B est plein, on gènère
+    #     une demi cellule B (1/15)
+
+    # 3 - Les deux créneaux sont pleins, on génère deux demi cellules
+    #     A et B
+
+    # 4 - Le créneau A est plein, le créneau B est vide et la durée de
+    #     l'activité A est 2, on génère une cellule entière (1/7)
+
+    # 5 - Le créneau A est plein, le créneau B est vide et la durée de
+    #     l'activité A est 1, on génère une demi cellule A (1/15)
+    
+    if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
+        print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\cellcolor{lightgray}}')
+    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
+        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        teachersB = ', '.join(filterTeachers(actB['teachers']))
+        subjectB = actB['subject']
+        tagsB = ', '.join(filterTags(actB['tags']))
+        roomB = actB ['room']
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{}{' +
+               roomB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+               subjectB + ' ' + tagsB + '}}')
+    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
+        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        subjectA = actA['subject']
+        tagsA = ', '.join(filterTags (actA['tags']))
+        roomA = actA ['room']
+        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        teachersB = ', '.join(filterTags (filterTeachers(actB['teachers'])))
+        subjectB = actB['subject']
+        tagsB = ', '.join(filterTags (actB['tags']))
+        roomB = actB ['room']
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
+               subjectA + ' ' + tagsA + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}{' +
+               roomB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+               subjectB + ' ' + tagsB + '}}')
+    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
+        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        subjectA = actA['subject']
+        tagsA = ', '.join(filterTags (actA['tags']))
+        roomA = actA ['room']
+        durationA = actA ['duration']
+        if durationA == 2:
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdh{' +
+               subjectA + ' ' + tagsA + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}}')
+        else:
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
+               subjectA + ' ' + tagsA + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}{}}')
+    else:
+        raise Exception ('Gen_Subgroup_H_Data', actA)
+
+def Gen_Room_H_Data (d, d_dict, h):
+    hA = h + ' A'
+    hB = h + ' B'
+
+    # 5 cas:
+
+    # 1 - Les deux créneaux sont vides, on gènère une cellule grise
+
+    # 2 - Le créneau A est vide et le créneau B est plein, on gènère
+    #     une demi cellule B (1/15)
+
+    # 3 - Les deux créneaux sont pleins, on génère deux demi cellules
+    #     A et B
+
+    # 4 - Le créneau A est plein, le créneau B est vide et la durée de
+    #     l'activité A est 2, on génère une cellule entière (1/7)
+
+    # 5 - Le créneau A est plein, le créneau B est vide et la durée de
+    #     l'activité A est 1, on génère une demi cellule A (1/15)
+    
+    if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
+        print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\cellcolor{lightgray}}')
+    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
+        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        teachersB = ', '.join(filterTeachers(actB['teachers']))
+        studentsB = ', '.join(actB['students'])
+        subjectB = actB['subject']
+        tagsB = ', '.join(filterTags(actB['tags']))
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{}{' +
+               studentsB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+               subjectB + ' ' + tagsB + '}}')
+    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
+        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        studentsA = ', '.join(actA['students'])
+        subjectA = actA['subject']
+        tagsA = ', '.join(filterTags (actA['tags']))
+        roomA = actA ['room']
+        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        teachersB = ', '.join(filterTags (filterTeachers(actB['teachers'])))
+        studentsB = ', '.join(actB['students'])
+        subjectB = actB['subject']
+        tagsB = ', '.join(filterTags (actB['tags']))
+        roomB = actB ['room']
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
+               subjectA + ' ' + tagsA + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}{' +
+               studentsB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+               subjectB + ' ' + tagsB + '}}')
+    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
+        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        studentsA = ', '.join(actA['students'])
+        subjectA = actA['subject']
+        tagsA = ', '.join(filterTags (actA['tags']))
+        roomA = actA ['room']
+        durationA = actA ['duration']
+        if durationA == 2:
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdh{' +
+               subjectA + ' ' + tagsA + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}}')
+        else:
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
+               subjectA + ' ' + tagsA + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}{}}')
+    else:
+        raise Exception ('Gen_Room_H_Data', actA)
 
 def Gen_Teacher_D_Data (d, d_dict):
     Gen_Teacher_H_Data (d, d_dict, '08:15 - 10:15')
@@ -342,33 +487,86 @@ def Gen_Teacher_D_Data (d, d_dict):
     Gen_Teacher_H_Data (d, d_dict, '14:00 - 16:00')
     Gen_Teacher_H_Data (d, d_dict, '16:15 - 18:15')
 
+def Gen_Subgroup_D_Data (d, d_dict):
+    Gen_Subgroup_H_Data (d, d_dict, '08:15 - 10:15')
+    Gen_Subgroup_H_Data (d, d_dict, '10:30 - 12:30')
+    Gen_Subgroup_H_Data (d, d_dict, '14:00 - 16:00')
+    Gen_Subgroup_H_Data (d, d_dict, '16:15 - 18:15')
+
+def Gen_Room_D_Data (d, d_dict):
+    Gen_Room_H_Data (d, d_dict, '08:15 - 10:15')
+    Gen_Room_H_Data (d, d_dict, '10:30 - 12:30')
+    Gen_Room_H_Data (d, d_dict, '14:00 - 16:00')
+    Gen_Room_H_Data (d, d_dict, '16:15 - 18:15')
+
 def Gen_Teacher_TT_Data (t):
     if t.find ('ZZZ_JUM_') != -1:
-        return
-    
+        return    
     tt_dict = r_dict ['teachers'][t]['timetable']
-
     if tt_dict == emptyWeek ():
         return
-    
     t_name = t
     suffix = ''
-
     if t_name [-1] in "0123456789":
         space = t_name.rfind (' ')
         t_name = t [:space]
-        suffix = ' (Partie' + t [space:] + ')'
-    
+        suffix = t [space:]
+    # Temporarily redirect stdout to the teacher file
+    orig_stdout = sys.stdout
+    f = open ('Emplois Enseignants/' + t + '.tex', 'w')
+    sys.stdout = f
+    print ('\\input{../common_header.tex}')
     print ('\\newcommand{\\teacher}{' + t_name + '}')
     print ('\\newcommand{\\semestrepartie}{' + suffix + '}')
     print ('\\newcommand{\\fulltitle}{\\teacher{}\\semestrepartie{}}')
     print ('\\newcommand{\\teachersign}{{\\bf Signature de l\'enseignant}\\\\{\\bf \\teacher{}}}')
     print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
-    
     for d in tt_dict:
         Gen_Teacher_D_Data (d, tt_dict [d])
-    
+    print ('\\input{../common_footer.tex}')
+    sys.stdout = orig_stdout
+    f.close()
 
+def Gen_Subgroup_TT_Data (sg):
+    tt_dict = r_dict ['sgroups'][sg]['timetable']
+    if tt_dict == emptyWeek ():
+        return
+    s_name = sg[:-3] # Section
+    g_name = sg[-1]  # Groupe
+
+    # Temporarily redirect stdout to the teacher file
+    orig_stdout = sys.stdout
+    f = open ('Emplois Groupes/' + sg + '.tex', 'w')
+    sys.stdout = f
+    print ('\\input{../common_header.tex}')
+    print ('\\newcommand{\\fulltitle}{Section ' + s_name + ' Groupe ' + g_name + '}')
+    print ('\\newcommand{\\teachersign}{}')
+    print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
+    for d in tt_dict:
+        Gen_Subgroup_D_Data (d, tt_dict [d])
+    print ('\\input{../common_footer.tex}')
+    sys.stdout = orig_stdout
+    f.close()
+
+def Gen_Room_TT_Data (r):
+    tt_dict = r_dict ['rooms'][r]['timetable']
+    if tt_dict == emptyWeek ():
+        return
+
+    # Temporarily redirect stdout to the teacher file
+    orig_stdout = sys.stdout
+    f = open ('Emplois Salles/' + r + '.tex', 'w')
+    sys.stdout = f
+    print ('\\input{../common_header.tex}')
+    print ('\\newcommand{\\fulltitle}{Salle ' + r + '}')
+    print ('\\newcommand{\\teachersign}{}')
+    print ('\\newcommand{\\dirdptsign}{}')
+    for d in tt_dict:
+        Gen_Room_D_Data (d, tt_dict [d])
+    print ('\\input{../common_footer.tex}')
+    sys.stdout = orig_stdout
+    f.close()
+    
 xml = et.parse("2018-2019_Sem-2_ENIS_DGIMA_data_and_timetable.fet")
 
 root = xml.getroot()
@@ -391,4 +589,13 @@ root_tree = {
 
 Tree_Parse (root, root_tree)
 
-Gen_Teacher_TT_Data ('Wajdi LOUATI 2')
+for t in r_dict['teachers']:
+    Gen_Teacher_TT_Data (t)
+
+for sg in r_dict['sgroups']:
+    Gen_Subgroup_TT_Data (sg)
+
+for r in r_dict['rooms']:
+    Gen_Room_TT_Data (r)
+
+
