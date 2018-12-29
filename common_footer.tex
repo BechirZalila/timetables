@@ -1,0 +1,35 @@
+% $Id$
+\pagestyle{empty}
+\begin{landscape}
+  \begin{center}
+    {\large \institution{} - \dpt{} - Emploi du Temps - \semestre{} - \anneescolaire{}}
+  \end{center}
+  \begin{center}
+    {\LARGE \bf \fulltitle{}}
+  \end{center}
+  
+  \newcolumntype{D}    { >{\centering\arraybackslash} m{2cm} }
+  \newcolumntype{H}    { >{\centering\arraybackslash} m{5cm} }
+  \newcolumntype{X}{@{}m{0pt}@{}} % Dummy column due to a bug in latex
+  \begin{center}
+    \begin{tabular}{|D||H|H||H|H|X}\hline
+      & \hourone{} & \hourtwo{} & \hourthree{} & \hourfour{} &\\[0.7cm]\hline
+      \lundi{} & \lundione{} & \lunditwo{} & \lundithree{} & \lundifour{} &\\[1.5cm]\hline
+      \mardi{} & \mardione{} & \marditwo{} & \mardithree{} & \mardifour{} &\\[1.5cm]\hline
+      \mercredi{} & \mercredione{} & \mercreditwo{} & \mercredithree{} & \mercredifour{} &\\[1.5cm]\hline
+      \jeudi{} & \jeudione{} & \jeuditwo{} & \jeudithree{} & \jeudifour{} &\\[1.5cm]\hline
+      \vendredi{} & \vendredione{} & \vendreditwo{} & \vendredithree{} & \vendredifour{} &\\[1.5cm]\hline
+      \samedi{} & \samedione{} & \sameditwo{} & \samedithree{} & \samedifour{} &\\[1.5cm]\hline
+      \multicolumn{5}{|c|}{{\tiny \footmessage{}}} &\\\hline
+    \end{tabular}
+  \end{center}
+
+  \newcolumntype{L} { >{\arraybackslash} m{11cm} }
+  \newcolumntype{R} { >{\arraybackslash} m{11cm} }
+  \begin{center}
+    \begin{tabular}{R L X}
+      \makecell[l]{\teachersign{}} & \makecell[r]{\dirdptsign{}} &\\
+    \end{tabular}
+  \end{center}
+\end{landscape}
+\end{document}

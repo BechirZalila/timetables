@@ -1,0 +1,44 @@
+% $Id$
+\documentclass{article}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{makecell}
+\usepackage{pdflscape}
+\usepackage{diagbox}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+
+\newcommand{\institution}{ENIS}
+\newcommand{\dpt}{DGIMA}
+\newcommand{\semestre}{Semestre 2}
+\newcommand{\anneescolaire}{2018-2019}
+\newcommand{\dirdpt}{Fadoua DRIRA}
+\newcommand{\gendate}{28/12/2018 09:01}
+\newcommand{\fetversion}{5.37.4}
+\newcommand{\copyrightstart}{2014}
+\newcommand{\copyrightend}{2018}
+\newcommand{\copyrightholder}{Bechir ZALILA}
+\newcommand{\footmessage}{Emploi de Temps généré avec FET \fetversion{} et \LaTeX{} le \gendate{} ({\bf \copyright{} \copyrightstart{}-\copyrightend{} \copyrightholder{}})}
+
+\newcommand{\formathour}[1]{{\large\textbf{#1}}}
+\newcommand{\hourone}{\formathour{8:15 $\rightarrow$ 10:15}}
+\newcommand{\hourtwo}{\formathour{10:30 $\rightarrow$ 12:30}}
+\newcommand{\hourthree}{\formathour{14:00 $\rightarrow$ 16:00}}
+\newcommand{\hourfour}{\formathour{16:15 $\rightarrow$ 18:15}}
+
+\newcommand{\formatday}[1]{\large{\textbf{#1}}}
+\newcommand{\lundi}{\formatday{Lundi}}
+\newcommand{\mardi}{\formatday{Mardi}}
+\newcommand{\mercredi}{\formatday{Mercredi}}
+\newcommand{\jeudi}{\formatday{Jeudi}}
+\newcommand{\vendredi}{\formatday{Vendredi}}
+\newcommand{\samedi}{\formatday{Samedi}}
+
+\newcommand{\formatdh}[1]{\scriptsize{\textbf{\makecell[{{m{5cm}}}]{\centering #1}}}}
+\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=2pt,linecolor=red,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{#1}}}}{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{\raggedleft #2}}}}}}

@@ -144,9 +144,9 @@ def InsertActivity (a_id, x):
     
 def P_Activity (elt):
     a_dict = {
-        'Subject'  : getProperty (elt, 'Subject').text,
+        'subject'  : getProperty (elt, 'Subject').text,
         'teachers' : [x.text for x in getPropertyList (elt, 'Teacher')],
-        'tags'     : [x.text for x in getPropertyList (elt, 'ActivityTags')],
+        'tags'     : [x.text for x in getPropertyList (elt, 'Activity_Tag')],
         'students' : [x.text for x in getPropertyList (elt, 'Students')],
         'duration' : int (getProperty (elt, 'Duration').text),
         'day'      : None,
@@ -231,6 +231,144 @@ def P_Space_Constraints_List (elt):
     Tree_Parse (elt, {'ConstraintActivityPreferredRoom' :
                       P_ConstraintActivityPreferredRoom})
 
+tt_d_trans = {
+    'Lundi'    : 'lundi',
+    'Mardi'    : 'mardi',
+    'Mercredi' : 'mercredi',
+    'Jeudi'    : 'jeudi',
+    'Vendredi' : 'vendredi',
+    'Samedi'   : 'samedi'
+}
+
+tt_h_trans = {
+    '08:15 - 10:15'   : 'one',
+    '08:15 - 10:15 A' : 'one',
+    '08:15 - 10:15 B' : 'one',
+    '10:30 - 12:30'   : 'two',
+    '10:30 - 12:30 A' : 'two',
+    '10:30 - 12:30 B' : 'two',
+    '14:00 - 16:00'   : 'three',
+    '14:00 - 16:00 A' : 'three',
+    '14:00 - 16:00 B' : 'three',
+    '16:15 - 18:15'   : 'four',
+    '16:15 - 18:15 A' : 'four',
+    '16:15 - 18:15 B' : 'four'
+}
+
+def Gen_Teacher_H_Data (d, d_dict, h):
+    hA = h + ' A'
+    hB = h + ' B'
+
+    # 5 cas:
+
+    # 1 - Les deux créneaux sont vides, on gènère une cellule grise
+
+    # 2 - Le créneau A est vide et le créneau B est plein, on gènère
+    #     une demi cellule B (1/15)
+
+    # 3 - Les deux créneaux sont pleins, on génère deux demi cellules
+    #     A et B
+
+    # 4 - Le créneau A est plein, le créneau B est vide et la durée de
+    #     l'activité A est 2, on génère une cellule entière (1/7)
+
+    # 5 - Le créneau A est plein, le créneau B est vide et la durée de
+    #     l'activité A est 1, on génère une demi cellule A (1/15)
+    
+    if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
+        print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\cellcolor{lightgray}}')
+    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
+        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        studentsB = ', '.join(actB['students'])
+        subjectB = actB['subject']
+        tagsB = ', '.join(actB['tags'])
+        roomB = actB ['room']
+        print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\formatdhh{}{' +
+               roomB + '\\\\' + studentsB + '\\\\' + subjectB + ' ' + tagsB +
+               '}}')
+    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
+        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        studentsA = ', '.join(actA['students'])
+        subjectA = actA['subject']
+        tagsA = ', '.join(actA['tags'])
+        roomA = actA ['room']
+        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        studentsB = ', '.join(actB['students'])
+        subjectB = actB['subject']
+        tagsB = ', '.join(actB['tags'])
+        roomB = actB ['room']
+        print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\formatdhh{' +
+               subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
+               '}{' +
+               roomB + '\\\\' + studentsB + '\\\\' + subjectB + ' ' + tagsB +
+               '}}')
+    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
+        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        studentsA = ', '.join(actA['students'])
+        subjectA = actA['subject']
+        tagsA = ', '.join(actA['tags'])
+        roomA = actA ['room']
+        durationA = actA ['duration']
+        if durationA == 2:
+            print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\formatdh{' +
+               subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
+               '}}')
+        else:
+            print ('\\newcommand{\\' +
+               tt_d_trans[d] +
+               tt_h_trans[h] +
+               '}{\\formatdhh{' +
+               subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
+               '}{}')
+    else:
+        raise Exception ('InsertActivity', actA)
+        
+
+def Gen_Teacher_D_Data (d, d_dict):
+    Gen_Teacher_H_Data (d, d_dict, '08:15 - 10:15')
+    Gen_Teacher_H_Data (d, d_dict, '10:30 - 12:30')
+    Gen_Teacher_H_Data (d, d_dict, '14:00 - 16:00')
+    Gen_Teacher_H_Data (d, d_dict, '16:15 - 18:15')
+
+def Gen_Teacher_TT_Data (t):
+    if t.find ('ZZZ_JUM_') != -1:
+        return
+    
+    tt_dict = r_dict ['teachers'][t]['timetable']
+
+    if tt_dict == emptyWeek ():
+        return
+    
+    t_name = t
+    suffix = ''
+
+    if t_name [-1] in "0123456789":
+        space = t_name.rfind (' ')
+        t_name = t [:space]
+        suffix = ' (Partie' + t [space:] + ')'
+    
+    print ('\\newcommand{\\teacher}{' + t_name + '}')
+    print ('\\newcommand{\\semestrepartie}{' + suffix + '}')
+    print ('\\newcommand{\\fulltitle}{\\teacher{}\\semestrepartie{}}')
+    print ('\\newcommand{\\teachersign}{{\\bf Signature de l\'enseignant}\\\\{\\bf \\teacher{}}}')
+    print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
+    
+    for d in tt_dict:
+        Gen_Teacher_D_Data (d, tt_dict [d])
+    
+
 xml = et.parse("2018-2019_Sem-2_ENIS_DGIMA_data_and_timetable.fet")
 
 root = xml.getroot()
@@ -252,6 +390,5 @@ root_tree = {
 }
 
 Tree_Parse (root, root_tree)
-print (r_dict['rooms']['8103']['timetable']['Lundi'])
-print (r_dict['teachers']['Bechir ZALILA']['timetable']['Lundi'])
-print (r_dict['sgroups']['GI1-S1-G1']['timetable']['Lundi'])
+
+Gen_Teacher_TT_Data ('Wajdi LOUATI 2')
