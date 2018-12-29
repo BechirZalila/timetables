@@ -96,8 +96,8 @@ stud_stack = []
 
 def P_Subgroup (elt):
     g_name = stud_stack[-1]
-    r_dict ['groups'][g_name]['subgroups'].add (getName(elt))
-    r_dict ['subgroups'][getName(elt)] = {
+    r_dict ['groups'][g_name]['sgroups'].add (getName(elt))
+    r_dict ['sgroups'][getName(elt)] = {
         'group'      : g_name,
         'activities' : [],
         'timetable'  : emptyWeek()
@@ -109,7 +109,7 @@ def P_Group (elt):
     r_dict ['groups'][getName (elt)] = {
         'year'       : y_name,
         'activities' : [],
-        'subgroups'  : set()
+        'sgroups'  : set()
     }
     stud_stack.append (getName (elt))
     Tree_Parse (elt, {'Subgroup' : P_Subgroup})
@@ -127,18 +127,18 @@ def P_Year (elt):
 def P_Students_List (elt):
     r_dict['years']     = {}
     r_dict['groups']    = {}
-    r_dict['subgroups'] = {}
+    r_dict['sgroups'] = {}
     Tree_Parse (elt, {'Year' : P_Year})
 
-def InsertActivity (id, x):
+def InsertActivity (a_id, x):
     if x in r_dict ['teachers']:
-        r_dict ['teachers'][x]['activities'].append (id)
+        r_dict ['teachers'][x]['activities'].append (a_id)
     elif x in r_dict ['years']:
-        r_dict ['years'][x]['activities'].append (id)
+        r_dict ['years'][x]['activities'].append (a_id)
     elif x in r_dict ['groups']:
-        r_dict ['groups'][x]['activities'].append (id)
-    elif x in r_dict ['subgroups']:
-        r_dict ['subgroups'][x]['activities'].append (id)
+        r_dict ['groups'][x]['activities'].append (a_id)
+    elif x in r_dict ['sgroups']:
+        r_dict ['sgroups'][x]['activities'].append (a_id)
     else:
         raise Exception ('InsertActivity', x)
     
@@ -153,12 +153,12 @@ def P_Activity (elt):
         'hour'     : None,
         'room'     : None,
     }
-    id = getPropertyText (elt, 'Id')
-    r_dict['activities'][id] = a_dict
+    a_id = getPropertyText (elt, 'Id')
+    r_dict['activities'][a_id] = a_dict
     for t in a_dict ['teachers']:
-        InsertActivity (id, t)
+        InsertActivity (a_id, t)
     for s in a_dict ['students']:
-        InsertActivity (id, s)
+        InsertActivity (a_id, s)
     
 def P_Activities_List (elt):
     r_dict['activities'] = {}
@@ -172,11 +172,13 @@ def P_Buildings_List (elt):
     Tree_Parse (elt, {'Building' : P_Building})
 
 def P_Room (elt):
-    r_dict['rooms'][getName (elt)] = {
+    r_name = getName (elt)
+    b_name = getPropertyText (elt, 'Building')
+    r_dict['rooms'][r_name] = {
         'timetable' : emptyWeek(),
-        'building'  : getPropertyText (elt, 'Building')
+        'building'  : b_name
     }
-    r_dict['buildings'][getPropertyText (elt, 'Building')]['rooms'].add (getName (elt))
+    r_dict['buildings'][b_name]['rooms'].add (r_name)
     
 def P_Rooms_List (elt):
     r_dict ['rooms'] = {}
@@ -184,26 +186,26 @@ def P_Rooms_List (elt):
 
 def P_ConstraintActivityPreferredStartingTime (elt):
     if active (elt):
-        act_id = getPropertyText (elt, 'Activity_Id')
-        act_day = getPropertyText (elt, 'Preferred_Day')
-        act_hour = getPropertyText (elt, 'Preferred_Hour')
+        a_id = getPropertyText (elt, 'Activity_Id')
+        day = getPropertyText (elt, 'Preferred_Day')
+        hour = getPropertyText (elt, 'Preferred_Hour')
 
-        r_dict ['activities'][act_id]['day'] = act_day
-        r_dict ['activities'][act_id]['hour'] = act_hour
+        r_dict ['activities'][a_id]['day'] = day
+        r_dict ['activities'][a_id]['hour'] = hour
 
-        for t in r_dict ['activities'][act_id]['teachers']:
-            r_dict['teachers'][t]['timetable'][act_day][act_hour].add(act_id)
+        for t in r_dict ['activities'][a_id]['teachers']:
+            r_dict['teachers'][t]['timetable'][day][hour].add(a_id)
 
-        for s in r_dict ['activities'][act_id]['students']:
-            if s in r_dict ['subgroups']:
-                r_dict['subgroups'][s]['timetable'][act_day][act_hour].add(act_id)
+        for s in r_dict ['activities'][a_id]['students']:
+            if s in r_dict ['sgroups']:
+                r_dict['sgroups'][s]['timetable'][day][hour].add(a_id)
             elif s in r_dict ['groups']:
-                for sg in r_dict ['groups'][s]['subgroups']:
-                    r_dict['subgroups'][sg]['timetable'][act_day][act_hour].add(act_id)
+                for sg in r_dict ['groups'][s]['sgroups']:
+                    r_dict['sgroups'][sg]['timetable'][day][hour].add(a_id)
             elif s in r_dict ['years']:
                 for g in r_dict['years'][s]['groups']:
-                    for sg in r_dict ['groups'][g]['subgroups']:
-                        r_dict['subgroups'][sg]['timetable'][act_day][act_hour].add(act_id)
+                    for sg in r_dict ['groups'][g]['sgroups']:
+                        r_dict['sgroups'][sg]['timetable'][day][hour].add(a_id)
             else:
                 raise Exception ('ConstraintActivityPreferredStartingTime', s)
     
@@ -214,13 +216,13 @@ def P_Time_Constraints_List (elt):
 def P_ConstraintActivityPreferredRoom (elt):
     # Take in account only constraints generated by Fet
     if active (elt):
-        act_id = getPropertyText (elt, 'Activity_Id')
-        act_room = getPropertyText (elt, 'Room')
-        act_day = r_dict ['activities'][act_id]['day']
-        act_hour = r_dict ['activities'][act_id]['hour']
+        a_id = getPropertyText (elt, 'Activity_Id')
+        room = getPropertyText (elt, 'Room')
+        day = r_dict ['activities'][a_id]['day']
+        hour = r_dict ['activities'][a_id]['hour']
 
-        r_dict ['activities'][act_id]['room'] = act_room
-        r_dict ['rooms'][act_room]['timetable'][act_day][act_hour].add(act_id)
+        r_dict ['activities'][a_id]['room'] = room
+        r_dict ['rooms'][room]['timetable'][day][hour].add(a_id)
     
 def P_Space_Constraints_List (elt):
     Tree_Parse (elt, {'ConstraintActivityPreferredRoom' :
@@ -249,4 +251,4 @@ root_tree = {
 Tree_Parse (root, root_tree)
 print (r_dict['rooms']['8103']['timetable']['Lundi'])
 print (r_dict['teachers']['Bechir ZALILA']['timetable']['Lundi'])
-print (r_dict['subgroups']['GI1-S1-G1']['timetable']['Lundi'])
+print (r_dict['sgroups']['GI1-S1-G1']['timetable']['Lundi'])
