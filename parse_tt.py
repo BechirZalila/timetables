@@ -109,7 +109,7 @@ def P_Group (elt):
     r_dict ['groups'][getName (elt)] = {
         'year'       : y_name,
         'activities' : [],
-        'sgroups'  : set()
+        'sgroups'    : set()
     }
     stud_stack.append (getName (elt))
     Tree_Parse (elt, {'Subgroup' : P_Subgroup})
@@ -125,8 +125,8 @@ def P_Year (elt):
     stud_stack.pop()
     
 def P_Students_List (elt):
-    r_dict['years']     = {}
-    r_dict['groups']    = {}
+    r_dict['years']   = {}
+    r_dict['groups']  = {}
     r_dict['sgroups'] = {}
     Tree_Parse (elt, {'Year' : P_Year})
 
@@ -198,11 +198,14 @@ def P_ConstraintActivityPreferredStartingTime (elt):
 
         for s in r_dict ['activities'][a_id]['students']:
             if s in r_dict ['sgroups']:
+                # Apply the activity only to the subgroup
                 r_dict['sgroups'][s]['timetable'][day][hour].add(a_id)
             elif s in r_dict ['groups']:
+                # Apply the activity to all the group's subgroups
                 for sg in r_dict ['groups'][s]['sgroups']:
                     r_dict['sgroups'][sg]['timetable'][day][hour].add(a_id)
             elif s in r_dict ['years']:
+                #  Apply the activity to all the year's groups' subgroups
                 for g in r_dict['years'][s]['groups']:
                     for sg in r_dict ['groups'][g]['sgroups']:
                         r_dict['sgroups'][sg]['timetable'][day][hour].add(a_id)
