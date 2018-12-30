@@ -6,6 +6,10 @@ import os
 from xml.etree import ElementTree as et
 
 r_dict = {}
+tex_dir  = 'tex_files'
+tchr_dir = 'Emplois Enseignants'
+sgrp_dir = 'Emplois Groupes'
+room_dir = 'Emplois Salles'
 
 def printInfos (elt):
     print ("Tag: <" + elt.tag + ">")
@@ -53,10 +57,12 @@ def Tree_Parse (elt, tree_dict):
             P_Unknown (e)
     
 def P_Institution_Name (elt):
-    print ("Parsing Institution Name: <" + elt.text + ">")
+    pass
+    #print ("Parsing Institution Name: <" + elt.text + ">")
 
 def P_Comments (elt):
-    print ("Parsing Comments: <" + elt.text + ">")
+    pass
+    #print ("Parsing Comments: <" + elt.text + ">")
 
 def P_Day (elt):
     r_dict ['days'].add(getName (elt))
@@ -382,8 +388,9 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags(actB['tags']))
         roomB = actB ['room']
-        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{}{' +
-               roomB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+               '}{\\formatdhh{}{' + roomB + '\\\\' + teachersB +
+               ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
@@ -396,10 +403,11 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags (actB['tags']))
         roomB = actB ['room']
-        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
-               subjectA + ' ' + tagsA + '\\\\' + teachersA +
-               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}{' +
-               roomB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+               '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
+               teachersA + ('\\\\' if len(teachersA) > 0 else '') +
+               roomA + '}{' + roomB + '\\\\' + teachersB +
+               ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
@@ -409,13 +417,15 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
         roomA = actA ['room']
         durationA = actA ['duration']
         if durationA == 2:
-            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdh{' +
-               subjectA + ' ' + tagsA + '\\\\' + teachersA +
-               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}}')
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+                   '}{\\formatdh{' + subjectA + ' ' + tagsA + '\\\\' +
+                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
+                   roomA + '}}')
         else:
-            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
-               subjectA + ' ' + tagsA + '\\\\' + teachersA +
-               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}{}}')
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+                   '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
+                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
+                   roomA + '}{}}')
     else:
         raise Exception ('Gen_Subgroup_H_Data', actA)
 
@@ -450,8 +460,9 @@ def Gen_Room_H_Data (d, d_dict, h):
         studentsB = ', '.join(actB['students'])
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags(actB['tags']))
-        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{}{' +
-               studentsB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+               '}{\\formatdhh{}{' + studentsB + '\\\\' + teachersB +
+               ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
@@ -466,10 +477,11 @@ def Gen_Room_H_Data (d, d_dict, h):
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags (actB['tags']))
         roomB = actB ['room']
-        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
-               subjectA + ' ' + tagsA + '\\\\' + teachersA +
-               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}{' +
-               studentsB + '\\\\' + teachersB + ('\\\\' if len(teachersB) > 0 else '') +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+               '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
+               teachersA + ('\\\\' if len(teachersA) > 0 else '') +
+               studentsA + '}{' + studentsB + '\\\\' + teachersB +
+               ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
@@ -480,13 +492,15 @@ def Gen_Room_H_Data (d, d_dict, h):
         roomA = actA ['room']
         durationA = actA ['duration']
         if durationA == 2:
-            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdh{' +
-               subjectA + ' ' + tagsA + '\\\\' + teachersA +
-               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}}')
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+                   '}{\\formatdh{' + subjectA + ' ' + tagsA + '\\\\' +
+                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
+                   studentsA + '}}')
         else:
-            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] + '}{\\formatdhh{' +
-               subjectA + ' ' + tagsA + '\\\\' + teachersA +
-               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}{}}')
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+                   '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
+                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
+                   studentsA + '}{}}')
     else:
         raise Exception ('Gen_Room_H_Data', actA)
 
@@ -508,10 +522,14 @@ def Gen_Room_D_Data (d, d_dict):
     Gen_Room_H_Data (d, d_dict, '14:00 - 16:00')
     Gen_Room_H_Data (d, d_dict, '16:15 - 18:15')
 
-def genPDF (f):
-    os.system ('pdflatex "' + f + '.tex"')
-    os.system ('rm "' + f + '.aux"')
-    os.system ('rm "' + f + '.log"')
+def genPDF (f, out_dir):
+    print ('PDFLATEX\t' + (f + '.tex').ljust(30) +
+           ' => ' + (f + '.pdf').rjust (30))
+    os.system ('pdflatex --interaction=batchmode --output-directory="' +
+               out_dir + '" "' + tex_dir + '/' + f + '.tex" > /dev/null')
+    # Cleanup
+    os.system ('rm "' + out_dir + '/' + f + '.aux"')
+    os.system ('rm "' + out_dir + '/' + f + '.log"')
 
 def Gen_Teacher_TT_Data (t):
     if t.find ('ZZZ_JUM_') != -1:
@@ -527,20 +545,22 @@ def Gen_Teacher_TT_Data (t):
         suffix = t [space:]
     # Temporarily redirect stdout to the teacher file
     orig_stdout = sys.stdout
-    f = open (t + '.tex', 'w')
+    f = open (tex_dir + '/' + t + '.tex', 'w')
     sys.stdout = f
-    print ('\\input{../common_header.tex}')
+    print ('\\input{common_header.tex}')
     print ('\\newcommand{\\teacher}{' + t_name + '}')
     print ('\\newcommand{\\semestrepartie}{' + suffix + '}')
     print ('\\newcommand{\\fulltitle}{\\teacher{}\\semestrepartie{}}')
-    print ('\\newcommand{\\teachersign}{{\\bf Signature de l\'enseignant}\\\\{\\bf \\teacher{}}}')
-    print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
+    print ('\\newcommand{\\teachersign}{{\\bf Signature de l\'enseignant}' +
+           '\\\\{\\bf \\teacher{}}}')
+    print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de ' +
+           'département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
     for d in tt_dict:
         Gen_Teacher_D_Data (d, tt_dict [d])
-    print ('\\input{../common_footer.tex}')
+    print ('\\input{common_footer.tex}')
     sys.stdout = orig_stdout
     f.close()
-    genPDF (t)
+    genPDF (t, tchr_dir)
 
 def Gen_Subgroup_TT_Data (sg):
     tt_dict = r_dict ['sgroups'][sg]['timetable']
@@ -551,18 +571,20 @@ def Gen_Subgroup_TT_Data (sg):
 
     # Temporarily redirect stdout to the teacher file
     orig_stdout = sys.stdout
-    f = open (sg + '.tex', 'w')
+    f = open (tex_dir + '/' + sg + '.tex', 'w')
     sys.stdout = f
-    print ('\\input{../common_header.tex}')
-    print ('\\newcommand{\\fulltitle}{Section ' + s_name + ' Groupe ' + g_name + '}')
+    print ('\\input{common_header.tex}')
+    print ('\\newcommand{\\fulltitle}{Section ' + s_name + ' Groupe '
+           + g_name + '}')
     print ('\\newcommand{\\teachersign}{}')
-    print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
+    print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur '
+           'de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
     for d in tt_dict:
         Gen_Subgroup_D_Data (d, tt_dict [d])
-    print ('\\input{../common_footer.tex}')
+    print ('\\input{common_footer.tex}')
     sys.stdout = orig_stdout
     f.close()
-    genPDF (sg)
+    genPDF (sg, sgrp_dir)
 
 def Gen_Room_TT_Data (r):
     tt_dict = r_dict ['rooms'][r]['timetable']
@@ -571,18 +593,18 @@ def Gen_Room_TT_Data (r):
 
     # Temporarily redirect stdout to the teacher file
     orig_stdout = sys.stdout
-    f = open (r + '.tex', 'w')
+    f = open (tex_dir + '/' + r + '.tex', 'w')
     sys.stdout = f
-    print ('\\input{../common_header.tex}')
+    print ('\\input{common_header.tex}')
     print ('\\newcommand{\\fulltitle}{Salle ' + r + '}')
     print ('\\newcommand{\\teachersign}{}')
     print ('\\newcommand{\\dirdptsign}{}')
     for d in tt_dict:
         Gen_Room_D_Data (d, tt_dict [d])
-    print ('\\input{../common_footer.tex}')
+    print ('\\input{common_footer.tex}')
     sys.stdout = orig_stdout
     f.close()
-    genPDF (r)
+    genPDF (r, room_dir)
     
 xml = et.parse("2018-2019_Sem-2_ENIS_DGIMA_data_and_timetable.fet")
 
@@ -606,19 +628,16 @@ root_tree = {
 
 Tree_Parse (root, root_tree)
 
-os.chdir('Emplois Enseignants')
+os.makedirs (tex_dir, exist_ok = True)
+os.makedirs (tchr_dir, exist_ok = True)
+os.makedirs (sgrp_dir, exist_ok = True)
+os.makedirs (room_dir, exist_ok = True)
+
 for t in r_dict['teachers']:
     Gen_Teacher_TT_Data (t)
-os.chdir('..')
 
-os.chdir('Emplois Groupes')
 for sg in r_dict['sgroups']:
     Gen_Subgroup_TT_Data (sg)
-os.chdir('..')
 
-os.chdir('Emplois Salles')
 for r in r_dict['rooms']:
     Gen_Room_TT_Data (r)
-os.chdir('..')
-
-
