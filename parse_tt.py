@@ -2,6 +2,7 @@
 # $Id$
 
 import sys
+import os
 from xml.etree import ElementTree as et
 
 r_dict = {}
@@ -507,6 +508,11 @@ def Gen_Room_D_Data (d, d_dict):
     Gen_Room_H_Data (d, d_dict, '14:00 - 16:00')
     Gen_Room_H_Data (d, d_dict, '16:15 - 18:15')
 
+def genPDF (f):
+    os.system ('pdflatex "' + f + '.tex"')
+    os.system ('rm "' + f + '.aux"')
+    os.system ('rm "' + f + '.log"')
+
 def Gen_Teacher_TT_Data (t):
     if t.find ('ZZZ_JUM_') != -1:
         return    
@@ -521,7 +527,7 @@ def Gen_Teacher_TT_Data (t):
         suffix = t [space:]
     # Temporarily redirect stdout to the teacher file
     orig_stdout = sys.stdout
-    f = open ('Emplois Enseignants/' + t + '.tex', 'w')
+    f = open (t + '.tex', 'w')
     sys.stdout = f
     print ('\\input{../common_header.tex}')
     print ('\\newcommand{\\teacher}{' + t_name + '}')
@@ -534,6 +540,7 @@ def Gen_Teacher_TT_Data (t):
     print ('\\input{../common_footer.tex}')
     sys.stdout = orig_stdout
     f.close()
+    genPDF (t)
 
 def Gen_Subgroup_TT_Data (sg):
     tt_dict = r_dict ['sgroups'][sg]['timetable']
@@ -544,7 +551,7 @@ def Gen_Subgroup_TT_Data (sg):
 
     # Temporarily redirect stdout to the teacher file
     orig_stdout = sys.stdout
-    f = open ('Emplois Groupes/' + sg + '.tex', 'w')
+    f = open (sg + '.tex', 'w')
     sys.stdout = f
     print ('\\input{../common_header.tex}')
     print ('\\newcommand{\\fulltitle}{Section ' + s_name + ' Groupe ' + g_name + '}')
@@ -555,6 +562,7 @@ def Gen_Subgroup_TT_Data (sg):
     print ('\\input{../common_footer.tex}')
     sys.stdout = orig_stdout
     f.close()
+    genPDF (sg)
 
 def Gen_Room_TT_Data (r):
     tt_dict = r_dict ['rooms'][r]['timetable']
@@ -563,7 +571,7 @@ def Gen_Room_TT_Data (r):
 
     # Temporarily redirect stdout to the teacher file
     orig_stdout = sys.stdout
-    f = open ('Emplois Salles/' + r + '.tex', 'w')
+    f = open (r + '.tex', 'w')
     sys.stdout = f
     print ('\\input{../common_header.tex}')
     print ('\\newcommand{\\fulltitle}{Salle ' + r + '}')
@@ -574,6 +582,7 @@ def Gen_Room_TT_Data (r):
     print ('\\input{../common_footer.tex}')
     sys.stdout = orig_stdout
     f.close()
+    genPDF (r)
     
 xml = et.parse("2018-2019_Sem-2_ENIS_DGIMA_data_and_timetable.fet")
 
@@ -597,13 +606,19 @@ root_tree = {
 
 Tree_Parse (root, root_tree)
 
+os.chdir('Emplois Enseignants')
 for t in r_dict['teachers']:
     Gen_Teacher_TT_Data (t)
+os.chdir('..')
 
+os.chdir('Emplois Groupes')
 for sg in r_dict['sgroups']:
     Gen_Subgroup_TT_Data (sg)
+os.chdir('..')
 
+os.chdir('Emplois Salles')
 for r in r_dict['rooms']:
     Gen_Room_TT_Data (r)
+os.chdir('..')
 
 
