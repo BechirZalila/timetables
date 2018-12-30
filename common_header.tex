@@ -7,10 +7,15 @@
 \usepackage{pdflscape}
 \usepackage{diagbox}
 \usepackage{color}
+\usepackage{url}
 \usepackage[table]{xcolor}
+
 \usepackage[T1]{fontenc}
-\usepackage[scaled]{helvet}
+\usepackage{lmodern}
 \renewcommand{\familydefault}{\sfdefault}
+%\usepackage[T1]{fontenc}
+%\usepackage[scaled]{helvet}
+%\renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 
@@ -24,7 +29,8 @@
 \newcommand{\copyrightstart}{2014}
 \newcommand{\copyrightend}{2018}
 \newcommand{\copyrightholder}{Bechir ZALILA}
-\newcommand{\footmessage}{Emploi de Temps généré avec FET \fetversion{} et \LaTeX{} le \gendate{} ({\bf \copyright{} \copyrightstart{}-\copyrightend{} \copyrightholder{}})}
+\newcommand{\copyrightholderemail}{\url{bechir.zalila@enis.tn}}
+\newcommand{\footmessage}{Emploi de Temps généré avec FET \fetversion{} et {\fontfamily{cmr}\selectfont \LaTeX{}} le \gendate{}. {\bf \copyright{} \copyrightstart{}-\copyrightend{} \copyrightholder{} (\copyrightholderemail{})}}
 
 \newcommand{\formathour}[1]{{\large\textbf{#1}}}
 \newcommand{\hourone}{\formathour{8:15 $\rightarrow$ 10:15}}
@@ -41,4 +47,4 @@
 \newcommand{\samedi}{\formatday{Samedi}}
 
 \newcommand{\formatdh}[1]{\scriptsize{\textbf{\makecell[{{m{5cm}}}]{\centering #1}}}}
-\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=2pt,linecolor=red,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{#1}}}}{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{\raggedleft #2}}}}}}
+\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{#1}}}}{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{\raggedleft #2}}}}}}

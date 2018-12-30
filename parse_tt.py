@@ -259,8 +259,16 @@ tt_h_trans = {
 def filterTags (tags):
     return [t for t in tags if t[1] != '1']
 
-def filterTeachers (teachers):
-    return [t for t in teachers if t[:3] != 'ZZZ']
+def trimTeacher (t):
+    if t [-1] in "0123456789":
+        space = t.rfind (' ')
+        return t [:space]
+    return t
+
+def filterTeachers (teachers, rev = False):
+    l = [trimTeacher (t) for t in teachers if t[:3] != 'ZZZ']
+    l.sort (key = lambda s: len (s), reverse = rev)
+    return l
 
 def Gen_Teacher_H_Data (d, d_dict, h):
     hA = h + ' A'
@@ -369,7 +377,7 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                '}{\\cellcolor{lightgray}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        teachersB = ', '.join(filterTeachers(actB['teachers']))
+        teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags(actB['tags']))
         roomB = actB ['room']
@@ -378,12 +386,12 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
-        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         subjectA = actA['subject']
         tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        teachersB = ', '.join(filterTags (filterTeachers(actB['teachers'])))
+        teachersB = '\\\\'.join(filterTags (filterTeachers(actB['teachers'])))
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags (actB['tags']))
         roomB = actB ['room']
@@ -394,7 +402,7 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
-        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         subjectA = actA['subject']
         tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
@@ -437,7 +445,7 @@ def Gen_Room_H_Data (d, d_dict, h):
                '}{\\cellcolor{lightgray}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        teachersB = ', '.join(filterTeachers(actB['teachers']))
+        teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         studentsB = ', '.join(actB['students'])
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags(actB['tags']))
@@ -446,13 +454,13 @@ def Gen_Room_H_Data (d, d_dict, h):
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
-        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         studentsA = ', '.join(actA['students'])
         subjectA = actA['subject']
         tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        teachersB = ', '.join(filterTags (filterTeachers(actB['teachers'])))
+        teachersB = '\\\\'.join(filterTags (filterTeachers(actB['teachers'])))
         studentsB = ', '.join(actB['students'])
         subjectB = actB['subject']
         tagsB = ', '.join(filterTags (actB['tags']))
@@ -464,7 +472,7 @@ def Gen_Room_H_Data (d, d_dict, h):
                subjectB + ' ' + tagsB + '}}')
     elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
-        teachersA = ', '.join(filterTeachers(actA['teachers']))
+        teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         studentsA = ', '.join(actA['students'])
         subjectA = actA['subject']
         tagsA = ', '.join(filterTags (actA['tags']))
