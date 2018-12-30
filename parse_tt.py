@@ -349,7 +349,7 @@ def Gen_Teacher_H_Data (d, d_dict, h):
                tt_d_trans[d] +
                tt_h_trans[h] +
                '}{\\cellcolor{lightgray}}')
-    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
+    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         studentsB = ', '.join(actB['students'])
         subjectB = actB['subject']
@@ -361,7 +361,7 @@ def Gen_Teacher_H_Data (d, d_dict, h):
                '}{\\formatdhh{}{' +
                roomB + '\\\\' + studentsB + '\\\\' + subjectB + ' ' + tagsB +
                '}}')
-    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
+    elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         studentsA = ', '.join(actA['students'])
         subjectA = actA['subject']
@@ -380,7 +380,7 @@ def Gen_Teacher_H_Data (d, d_dict, h):
                '}{' +
                roomB + '\\\\' + studentsB + '\\\\' + subjectB + ' ' + tagsB +
                '}}')
-    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
+    elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         studentsA = ', '.join(actA['students'])
         subjectA = actA['subject']
@@ -429,7 +429,7 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                tt_d_trans[d] +
                tt_h_trans[h] +
                '}{\\cellcolor{lightgray}}')
-    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
+    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         subjectB = actB['subject']
@@ -439,7 +439,7 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                '}{\\formatdhh{}{' + roomB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
-    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
+    elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         subjectA = actA['subject']
@@ -456,7 +456,7 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                roomA + '}{' + roomB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
-    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
+    elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         subjectA = actA['subject']
@@ -474,7 +474,8 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                    teachersA + ('\\\\' if len(teachersA) > 0 else '') +
                    roomA + '}{}}')
     else:
-        raise Exception ('Gen_Subgroup_H_Data', actA)
+        raise Exception ('Gen_Subgroup_H_Data',
+                         str (len (d_dict[hA])) + ' ' + str (len (d_dict[hB])))
 
 def Gen_Room_H_Data (d, d_dict, h):
     hA = h + ' A'
@@ -501,7 +502,7 @@ def Gen_Room_H_Data (d, d_dict, h):
                tt_d_trans[d] +
                tt_h_trans[h] +
                '}{\\cellcolor{lightgray}}')
-    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) == 1:
+    elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         studentsB = ', '.join(actB['students'])
@@ -511,7 +512,7 @@ def Gen_Room_H_Data (d, d_dict, h):
                '}{\\formatdhh{}{' + studentsB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
-    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 1:
+    elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         studentsA = ', '.join(actA['students'])
@@ -530,7 +531,7 @@ def Gen_Room_H_Data (d, d_dict, h):
                studentsA + '}{' + studentsB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + ' ' + tagsB + '}}')
-    elif len (d_dict[hA]) == 1 and len (d_dict[hB]) == 0:
+    elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         studentsA = ', '.join(actA['students'])
@@ -708,9 +709,27 @@ def Gen_Room_TT_Data (r):
 if __name__ == '__main__':
     if (len (sys.argv) == 1):
         input_file = '2018-2019_Sem-2_ENIS_DGIMA_data_and_timetable.fet'
-    else:
+
+    if (len (sys.argv) >= 2):
+        # Assume the first command line argument to be the FET file
         input_file = sys.argv [1]
 
+    if (len (sys.argv) >= 3):
+        # Assume the second command line argument to be the TeX files dir
+        tex_dir = sys.argv [2]
+    
+    if (len (sys.argv) >= 4):
+        # Assume the third command line argument to be the teachers PDF dir
+        tchr_dir = sys.argv [3]
+    
+    if (len (sys.argv) >= 5):
+        # Assume the fourth command line argument to be the students PDF dir
+        sgrp_dir = sys.argv [4]
+
+    if (len (sys.argv) >= 6):
+        # Assume the fifth command line argument to be the teachers PDF dir
+        room_dir = sys.argv [5]
+    
     # Parse the FET file and store it into a sort of an AST
     
     xml  = et.parse(input_file)
