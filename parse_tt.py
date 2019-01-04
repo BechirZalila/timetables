@@ -575,8 +575,8 @@ def genPDF (f, out_dir):
        inside the given out_dir directory. All temporary files
        produced during the generation are deleted.
     """
-    print ('PDFLATEX\t' + (f + '.tex').ljust(30) +
-           ' => ' + (f + '.pdf').rjust (30))
+    print ('PDFLATEX  ' + (f + '.tex').ljust(27) +
+           ' => ' + (f + '.pdf').rjust (27))
     os.system ('pdflatex --interaction=batchmode --output-directory="' +
                out_dir + '" "' + tex_dir + '/' + f + '.tex" > /dev/null')
     # Cleanup

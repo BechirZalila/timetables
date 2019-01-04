@@ -13,13 +13,14 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \renewcommand{\familydefault}{\sfdefault}
-%\usepackage[T1]{fontenc}
-%\usepackage[scaled]{helvet}
-%\renewcommand{\familydefault}{\sfdefault}
 
 \input{common_infos.tex}
 
-\newcommand{\footmessage}{Emploi de Temps calculé avec FET \fetversion{} et mis en forme avec {\fontfamily{cmr}\selectfont \LaTeX{}} le \gendate{}. {\bf \copyright{} \copyrightstart{}-\copyrightend{} \copyrightholder{} (\copyrightholderemail{})}}
+\newcommand{\footmessage}{Emploi de Temps calculé avec FET
+  \fetversion{} et mis en forme avec {\fontfamily{cmr}\selectfont
+    \LaTeX{}} le \gendate{}. {\bf \copyright{}
+    \copyrightstart{}-\copyrightend{} \copyrightholder{}
+    (\copyrightholderemail{})}}
 
 \newcommand{\formathour}[1]{{\large\textbf{#1}}}
 \newcommand{\hourone}{\formathour{8:15 $\rightarrow$ 10:15}}
@@ -36,4 +37,6 @@
 \newcommand{\samedi}{\formatday{Samedi}}
 
 \newcommand{\formatdh}[1]{\scriptsize{\textbf{\makecell[{{m{5cm}}}]{\centering #1}}}}
-\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{#1}}}}{\scriptsize{\textbf{\makecell[{{p{5cm}}}]{\raggedleft #2}}}}}}
+\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\makecell[{{p{4.8cm}}}]{#1}}}}{\scriptsize{\textbf{\makecell[{{p{4.8cm}}}]{\raggedleft #2}}}}}}
+%\newcommand{\formatdh}[1]{\scriptsize{\textbf{\centering\shortstack[c]{#1}}}}
+%\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\shortstack[l]{#1}}}}{\scriptsize{\textbf{\shortstack[r]{#2}}}}}}
