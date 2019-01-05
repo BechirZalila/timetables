@@ -36,7 +36,14 @@
 \newcommand{\vendredi}{\formatday{Vendredi}}
 \newcommand{\samedi}{\formatday{Samedi}}
 
-\newcommand{\formatdh}[1]{\scriptsize{\textbf{\makecell[{{m{5cm}}}]{\centering #1}}}}
-\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\makecell[{{p{4.8cm}}}]{#1}}}}{\scriptsize{\textbf{\makecell[{{p{4.8cm}}}]{\raggedleft #2}}}}}}
 %\newcommand{\formatdh}[1]{\scriptsize{\textbf{\centering\shortstack[c]{#1}}}}
 %\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\shortstack[l]{#1}}}}{\scriptsize{\textbf{\shortstack[r]{#2}}}}}}
+
+\newcommand{\formatdh}[1]{\scriptsize{\makecell[{{m{5cm}}}]{\centering #1}}}
+\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\makecell[{{p{4.8cm}}}]{#1}}}{\scriptsize{\makecell[{{p{4.8cm}}}]{\raggedleft #2}}}}}
+
+\newcommand{\formatroom}[1]{\colorbox{black}{\textcolor{white}{#1}}}
+\newcommand{\formatsubject}[1]{{\textbf{#1}}}
+\newcommand{\formatteacher}[1]{\textsc{\tiny{#1}}}
+\newcommand{\formattag}[1]{\textcolor{red!80!black}{\textbf{\emph{#1}}}}
+\newcommand{\formatstudents}[1]{\underline{#1}}

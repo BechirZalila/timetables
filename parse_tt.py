@@ -300,9 +300,28 @@ tt_h_trans = {
     '16:15 - 18:15 B' : 'four'
 }
 
+def commonFormat (s, ):
+    # In Latex all '_' must be escaped in standard mode
+    return s.replace ('_', '\_')
+
+def formatRoom (room):
+    return '\\formatroom{' + commonFormat (room) + '}'
+
+def formatSubject (subject):
+    return '\\formatsubject{' + commonFormat (subject) + '}'
+
+def formatTeacher (teacher):
+    return '\\formatteacher{' + commonFormat (teacher) + '}'
+
+def formatTag (tag):
+    return '(\\formattag{' + commonFormat (tag).replace('(', '').replace (')', '') + '})'
+
+def formatStudents (students):
+    return '\\formatstudents{' + commonFormat (students) + '}'
+
 def filterTags (tags):
     # We do not include the (1/15) and (1/7) tags
-    return [t for t in tags if t[1] != '1']
+    return [formatTag(t) for t in tags if t[1] != '1']
 
 def trimTeacher (t):
     # All teacher names ending with ' N' when N is a number are
@@ -317,7 +336,13 @@ def filterTeachers (teachers, rev = False):
     # Do not include ficticious teachers who are here only for the
     # sake of FET.
     
-    l = [trimTeacher (t) for t in teachers if t.find (fict_tch) == -1]
+    l = [formatTeacher (trimTeacher (t))
+            for t in teachers if t.find (fict_tch) == -1]
+    l.sort (key = lambda s: len (s), reverse = rev)
+    return l
+
+def filterStudents (students, rev = False):
+    l = [formatStudents (s) for s in students]
     l.sort (key = lambda s: len (s), reverse = rev)
     return l
 
@@ -345,62 +370,48 @@ def Gen_Teacher_H_Data (d, d_dict, h):
     #     l'activité A est 1, on génère une demi cellule A (1/15)
     
     if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
-        print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\cellcolor{lightgray}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        studentsB = ', '.join(actB['students'])
-        subjectB = actB['subject']
+        studentsB = ', '.join(filterStudents(actB['students']))
+        subjectB = formatSubject (actB['subject'])
         tagsB = ', '.join(filterTags(actB['tags']))
-        roomB = actB ['room']
-        print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
-               '}{\\formatdhh{}{' +
-               roomB + '\\\\' + studentsB + '\\\\' + subjectB + ' ' + tagsB +
-               '}}')
+        roomB = formatRoom (actB ['room'])
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+               '}{\\formatdhh{}{' + roomB + ' ' + studentsB + '\\\\' +
+               subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
-        studentsA = ', '.join(actA['students'])
-        subjectA = actA['subject']
+        studentsA = ', '.join(filterStudents(actA['students']))
+        subjectA = formatSubject (actA['subject'])
         tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = actA ['room']
+        roomA = formatRoom (actA ['room'])
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        studentsB = ', '.join(filterTags (actB['students']))
-        subjectB = actB['subject']
+        studentsB = ', '.join(filterStudents (actB['students']))
+        subjectB = formatSubject (actB['subject'])
         tagsB = ', '.join(filterTags (actB['tags']))
-        roomB = actB ['room']
-        print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
-               '}{\\formatdhh{' +
-               subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
-               '}{' +
-               roomB + '\\\\' + studentsB + '\\\\' + subjectB + ' ' + tagsB +
-               '}}')
+        roomB = formatRoom (actB ['room'])
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+               '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
+               '}' + '\\\\' + studentsA + ' ' + roomA +  '}{' + roomB +
+               ' ' + studentsB + '\\\\' + subjectB + '\\textsubscript{' +
+               tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
-        studentsA = ', '.join(actA['students'])
-        subjectA = actA['subject']
+        studentsA = ', '.join(filterStudents(actA['students']))
+        subjectA = formatSubject (actA['subject'])
         tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = actA ['room']
+        roomA = formatRoom (actA ['room'])
         durationA = actA ['duration']
         if durationA == 2:
-            print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
-               '}{\\formatdh{' +
-               subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
-               '}}')
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+                   '}{\\formatdh{' + subjectA + '\\textsubscript{' + tagsA +
+                   '}' + '\\\\' + studentsA + ' ' + roomA + '}}')
         else:
-            print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
-               '}{\\formatdhh{' +
-               subjectA + ' ' + tagsA + '\\\\' + studentsA + '\\\\' + roomA + 
-               '}{}}')
+            print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
+                   '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
+                   '}' + '\\\\' + studentsA + ' ' + roomA + '}{}}')
     else:
         raise Exception ('Gen_Teacher_H_Data', actA)
 
@@ -425,54 +436,53 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
     #     l'activité A est 1, on génère une demi cellule A (1/15)
     
     if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
-        print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\cellcolor{lightgray}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
-        subjectB = actB['subject']
+        subjectB = formatSubject (actB['subject'])
         tagsB = ', '.join(filterTags(actB['tags']))
-        roomB = actB ['room']
+        roomB = formatRoom (actB ['room'])
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{}{' + roomB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
-               subjectB + ' ' + tagsB + '}}')
+               subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
-        subjectA = actA['subject']
+        subjectA = formatSubject (actA['subject'])
         tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = actA ['room']
+        roomA = formatRoom (actA ['room'])
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        teachersB = '\\\\'.join(filterTags (filterTeachers(actB['teachers'])))
-        subjectB = actB['subject']
+        teachersB = '\\\\'.join (filterTeachers(actB['teachers']))
+        subjectB = formatSubject (actB['subject'])
         tagsB = ', '.join(filterTags (actB['tags']))
-        roomB = actB ['room']
+        roomB = formatRoom (actB ['room'])
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-               '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
-               teachersA + ('\\\\' if len(teachersA) > 0 else '') +
-               roomA + '}{' + roomB + '\\\\' + teachersB +
+               '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
+               '}' + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + roomA + '}{' +
+               roomB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
-               subjectB + ' ' + tagsB + '}}')
+               subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
-        subjectA = actA['subject']
+        subjectA = formatSubject (actA['subject'])
         tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = actA ['room']
+        roomA = formatRoom (actA ['room'])
         durationA = actA ['duration']
         if durationA == 2:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-                   '}{\\formatdh{' + subjectA + ' ' + tagsA + '\\\\' +
-                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
-                   roomA + '}}')
+                   '}{\\formatdh{' + subjectA + '\\textsubscript{' +
+                   tagsA + '}' + '\\\\' + teachersA +
+                   ('\\\\' if len(teachersA) > 0 else '') + roomA + '}}')
         else:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-                   '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
-                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
-                   roomA + '}{}}')
+                   '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
+                   '}' + '\\\\' + teachersA +
+                   ('\\\\' if len(teachersA) > 0 else '') + roomA + '}{}}')
     else:
         raise Exception ('Gen_Subgroup_H_Data',
                          str (len (d_dict[hA])) + ' ' + str (len (d_dict[hB])))
@@ -498,57 +508,56 @@ def Gen_Room_H_Data (d, d_dict, h):
     #     l'activité A est 1, on génère une demi cellule A (1/15)
     
     if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
-        print ('\\newcommand{\\' +
-               tt_d_trans[d] +
-               tt_h_trans[h] +
+        print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\cellcolor{lightgray}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
-        studentsB = ', '.join(actB['students'])
-        subjectB = actB['subject']
+        studentsB = ', '.join(filterStudents(actB['students']))
+        subjectB = formatSubject (actB['subject'])
         tagsB = ', '.join(filterTags(actB['tags']))
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{}{' + studentsB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
-               subjectB + ' ' + tagsB + '}}')
+               subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
-        studentsA = ', '.join(actA['students'])
-        subjectA = actA['subject']
+        studentsA = ', '.join(filterStudents(actA['students']))
+        subjectA = formatSubject (actA['subject'])
         tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
         actB = r_dict['activities'][list(d_dict[hB])[0]]
-        teachersB = '\\\\'.join(filterTags (filterTeachers(actB['teachers'])))
-        studentsB = ', '.join(actB['students'])
-        subjectB = actB['subject']
+        teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
+        studentsB = ', '.join(filterStudents(actB['students']))
+        subjectB = formatSubject (actB['subject'])
         tagsB = ', '.join(filterTags (actB['tags']))
         roomB = actB ['room']
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-               '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
-               teachersA + ('\\\\' if len(teachersA) > 0 else '') +
-               studentsA + '}{' + studentsB + '\\\\' + teachersB +
-               ('\\\\' if len(teachersB) > 0 else '') +
-               subjectB + ' ' + tagsB + '}}')
+               '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
+               '}' + '\\\\' + teachersA +
+               ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}{' +
+               studentsB + '\\\\' + teachersB +
+               ('\\\\' if len(teachersB) > 0 else '') + subjectB +
+               '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
         actA = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
-        studentsA = ', '.join(actA['students'])
-        subjectA = actA['subject']
+        studentsA = ', '.join(filterStudents(actA['students']))
+        subjectA = formatSubject (actA['subject'])
         tagsA = ', '.join(filterTags (actA['tags']))
         roomA = actA ['room']
         durationA = actA ['duration']
         if durationA == 2:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-                   '}{\\formatdh{' + subjectA + ' ' + tagsA + '\\\\' +
-                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
-                   studentsA + '}}')
+                   '}{\\formatdh{' + subjectA + '\\textsubscript{' + tagsA +
+                   '}' + '\\\\' + teachersA +
+                   ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}}')
         else:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-                   '}{\\formatdhh{' + subjectA + ' ' + tagsA + '\\\\' +
-                   teachersA + ('\\\\' if len(teachersA) > 0 else '') +
-                   studentsA + '}{}}')
+                   '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
+                   '}' + '\\\\' + teachersA +
+                   ('\\\\' if len(teachersA) > 0 else '') + studentsA + '}{}}')
     else:
         raise Exception ('Gen_Room_H_Data', actA)
 
@@ -761,12 +770,20 @@ if __name__ == '__main__':
     os.makedirs (room_dir, exist_ok = True)
 
     # Generate the time tables
+
+    stopAfterOne = False # For testing purpose
     
     for t in r_dict['teachers']:
         Gen_Teacher_TT_Data (t)
+        if stopAfterOne:
+            break
 
     for sg in r_dict['sgroups']:
         Gen_Subgroup_TT_Data (sg)
+        if stopAfterOne:
+            break
 
     for r in r_dict['rooms']:
         Gen_Room_TT_Data (r)
+        if stopAfterOne:
+            break
