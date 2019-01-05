@@ -1,7 +1,15 @@
 % $Id$
 \begin{document}
-\pagestyle{empty}
-\begin{landscape}
+\pagestyle{fancy}
+\paperwidth=\pdfpageheight
+\paperheight=\pdfpagewidth
+\pdfpageheight=\paperheight
+\pdfpagewidth=\paperwidth
+\headwidth=\textheight
+\begingroup 
+\vsize=\textwidth
+\hsize=\textheight
+%\begin{landscape}
   \begin{center}
     {\large \institution{} - \dpt{} - Emploi du Temps - \semestre{} - \anneescolaire{}}
   \end{center}
@@ -32,5 +40,6 @@
       \makecell[l]{\teachersign{}} & \makecell[r]{\dirdptsign{}} &\\
     \end{tabular}
   \end{center}
-\end{landscape}
+% \end{landscape}
+\endgroup
 \end{document}

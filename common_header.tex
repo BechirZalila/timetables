@@ -1,5 +1,6 @@
 % $Id$
 \documentclass[a4paper]{article}
+\usepackage{fancyhdr,graphicx}
 \usepackage[a4paper,margin=1.5cm]{geometry}
 \usepackage{array}
 \usepackage{multicol}
@@ -16,11 +17,20 @@
 
 \input{common_infos.tex}
 
-\newcommand{\footmessage}{Emploi de Temps calculé avec FET
-  \fetversion{} et mis en forme avec {\fontfamily{cmr}\selectfont
-    \LaTeX{}} le \gendate{}. {\bf \copyright{}
-    \copyrightstart{}-\copyrightend{} \copyrightholder{}
-    (\copyrightholderemail{})}}
+\renewcommand{\headrulewidth}{0pt}
+\lhead{\begin{picture}
+    (0,0)\put(30,-60){\includegraphics[height=2cm]{ENIS_logo}}
+  \end{picture}}
+\rhead{\begin{picture}
+    (0,0)\put(-120,-70){\includegraphics[height=2.5cm]{DGIMA_logo}}
+  \end{picture}}
+
+
+\newcommand{\footmessage}{\textcolor{purple!70!black!60!blue}{Emploi
+    de Temps calculé avec FET \fetversion{} et mis en forme avec
+    {\fontfamily{cmr}\selectfont \LaTeX{}} le \gendate{}. {\bf
+      \copyright{} \copyrightstart{}-\copyrightend{}
+      \copyrightholder{} (\copyrightholderemail{})}}}
 
 \newcommand{\formathour}[1]{{\large\textbf{#1}}}
 \newcommand{\hourone}{\formathour{8:15 $\rightarrow$ 10:15}}
