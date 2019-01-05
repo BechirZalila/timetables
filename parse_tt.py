@@ -371,7 +371,7 @@ def Gen_Teacher_H_Data (d, d_dict, h):
     
     if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-               '}{\\cellcolor{lightgray}}')
+               '}{\\cellcolor{emptycellcolor}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         studentsB = ', '.join(filterStudents(actB['students']))
@@ -437,7 +437,7 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
     
     if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-               '}{\\cellcolor{lightgray}}')
+               '}{\\cellcolor{emptycellcolor}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
@@ -509,7 +509,7 @@ def Gen_Room_H_Data (d, d_dict, h):
     
     if len (d_dict[hA]) == 0 and len (d_dict[hB]) == 0:
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
-               '}{\\cellcolor{lightgray}}')
+               '}{\\cellcolor{emptycellcolor}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
         actB = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))

@@ -15,8 +15,10 @@
 \usepackage{lmodern}
 \renewcommand{\familydefault}{\sfdefault}
 
+% Information diverses communes
 \input{common_infos.tex}
 
+% Style de l'en-tête
 \renewcommand{\headrulewidth}{0pt}
 \lhead{\begin{picture}
     (0,0)\put(30,-60){\includegraphics[height=2cm]{ENIS_logo}}
@@ -25,34 +27,42 @@
     (0,0)\put(-120,-70){\includegraphics[height=2.5cm]{DGIMA_logo}}
   \end{picture}}
 
-
+% Notice copyright
 \newcommand{\footmessage}{\textcolor{purple!70!black!60!blue}{Emploi
     de Temps calculé avec FET \fetversion{} et mis en forme avec
     {\fontfamily{cmr}\selectfont \LaTeX{}} le \gendate{}. {\bf
       \copyright{} \copyrightstart{}-\copyrightend{}
       \copyrightholder{} (\copyrightholderemail{})}}}
 
+% Format des titres de colonnes
 \newcommand{\formathour}[1]{{\large\textbf{#1}}}
-\newcommand{\hourone}{\formathour{8:15 $\rightarrow$ 10:15}}
-\newcommand{\hourtwo}{\formathour{10:30 $\rightarrow$ 12:30}}
+\newcommand{\hourone}  {\formathour{8:15  $\rightarrow$ 10:15}}
+\newcommand{\hourtwo}  {\formathour{10:30 $\rightarrow$ 12:30}}
 \newcommand{\hourthree}{\formathour{14:00 $\rightarrow$ 16:00}}
-\newcommand{\hourfour}{\formathour{16:15 $\rightarrow$ 18:15}}
+\newcommand{\hourfour} {\formathour{16:15 $\rightarrow$ 18:15}}
 
+% Format des titres de lignes
 \newcommand{\formatday}[1]{\large{\textbf{#1}}}
-\newcommand{\lundi}{\formatday{Lundi}}
-\newcommand{\mardi}{\formatday{Mardi}}
+\newcommand{\lundi}   {\formatday{Lundi}}
+\newcommand{\mardi}   {\formatday{Mardi}}
 \newcommand{\mercredi}{\formatday{Mercredi}}
-\newcommand{\jeudi}{\formatday{Jeudi}}
+\newcommand{\jeudi}   {\formatday{Jeudi}}
 \newcommand{\vendredi}{\formatday{Vendredi}}
-\newcommand{\samedi}{\formatday{Samedi}}
+\newcommand{\samedi}  {\formatday{Samedi}}
 
-%\newcommand{\formatdh}[1]{\scriptsize{\textbf{\centering\shortstack[c]{#1}}}}
-%\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\textbf{\shortstack[l]{#1}}}}{\scriptsize{\textbf{\shortstack[r]{#2}}}}}}
+% Couleur d'une cellule vide
+\definecolor{emptycellcolor}{RGB}{209, 209, 224}
 
+% Format des séances hebdomadaires et des séances bi-mensuelles
 \newcommand{\formatdh}[1]{\scriptsize{\makecell[{{m{5cm}}}]{\centering #1}}}
-\newcommand{\formatdhh}[2]{{\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]{\scriptsize{\makecell[{{p{4.8cm}}}]{#1}}}{\scriptsize{\makecell[{{p{4.8cm}}}]{\raggedleft #2}}}}}
+\newcommand{\formatdhh}[2]{
+  {\diagbox[dir=NE,linewidth=1pt,linecolor=darkgray,width=5.4cm,height=1.9cm]
+    {\scriptsize{\makecell[{{p{4.8cm}}}]{#1}}}
+    {\scriptsize{\makecell[{{p{4.8cm}}}]{\raggedleft #2}}}}}
 
-\newcommand{\formatroom}[1]{\colorbox{black}{\textcolor{white}{#1}}}
+% Format des salles, matières, noms d'enseignants, nature de la séance
+% et groupes d'étudiants.
+\newcommand{\formatroom}[1]{\colorbox{black!70}{\textcolor{red!10}{\textbf{#1}}}}
 \newcommand{\formatsubject}[1]{{\textbf{#1}}}
 \newcommand{\formatteacher}[1]{\textsc{\tiny{#1}}}
 \newcommand{\formattag}[1]{\textcolor{red!80!black}{\textbf{\emph{#1}}}}
