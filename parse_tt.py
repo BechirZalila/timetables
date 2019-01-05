@@ -2,8 +2,9 @@
 # $Id$
 
 import sys
-import os
+import os, os.path
 import re
+import glob
 from xml.etree import ElementTree as et
 
 r_dict = {}
@@ -13,11 +14,13 @@ sgrp_dir = 'Emplois Groupes'
 room_dir = 'Emplois Salles'
 fict_tch = 'ZZZ_JUM_'  # Ficticious teacher prefix
 fict_rm  = 'Salle OPT' # Ficticious room prefix
-institution    = '\\incomplete{institution}'
-department     = '\\incomplete{department}'
-departmenthead = '\\incomplete{departmenthead}'
-academicyear   = '\\incomplete{academicyear}'
-semester       = '\\incomplete{semester}'
+institution    = '\\incomplete{Institution}'
+department     = '\\incomplete{Department}'
+departmenthead = '\\incomplete{Dpt Head}'
+academicyear   = '\\incomplete{XXXX-YYYY}'
+semester       = '\\incomplete{Z}'
+fetversion     = '\\incomplete{X.Y.Z}'
+gendate        = '\\incomplete{DD/MM/YYY HH:MM}'
 
 def printInfos (elt):
     print ("Tag: <" + elt.tag + ">")
@@ -68,7 +71,8 @@ def Tree_Parse (elt, tree_dict):
             P_Unknown (e)
     
 def P_Institution_Name (elt):
-    print ("Parsing Institution Name: <" + elt.text + ">")
+    #print ("Parsing Institution Name: <" + elt.text + ">")
+    pass
 
 def P_Comments (elt):
     global institution
@@ -106,8 +110,6 @@ def P_Comments (elt):
 
     if len (m) > 0:
         semester = m [0]
-
-    print (institution, department, departmenthead, academicyear, semester)
 
 def P_Day (elt):
     r_dict ['days'].add(getName (elt))
@@ -413,37 +415,40 @@ def Gen_Teacher_H_Data (d, d_dict, h):
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\cellcolor{emptycellcolor}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
-        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        actB      = r_dict['activities'][list(d_dict[hB])[0]]
         studentsB = ', '.join(filterStudents(actB['students']))
-        subjectB = formatSubject (actB['subject'])
-        tagsB = ', '.join(filterTags(actB['tags']))
-        roomB = formatRoom (actB ['room'])
+        subjectB  = formatSubject (actB['subject'])
+        tagsB     = ', '.join(filterTags(actB['tags']))
+        roomB     = formatRoom (actB ['room'])
+
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{}{' + roomB + ' ' + studentsB + '\\\\' +
                subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
-        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        actA      = r_dict['activities'][list(d_dict[hA])[0]]
         studentsA = ', '.join(filterStudents(actA['students']))
-        subjectA = formatSubject (actA['subject'])
-        tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = formatRoom (actA ['room'])
-        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        subjectA  = formatSubject (actA['subject'])
+        tagsA     = ', '.join(filterTags (actA['tags']))
+        roomA     = formatRoom (actA ['room'])
+        actB      = r_dict['activities'][list(d_dict[hB])[0]]
         studentsB = ', '.join(filterStudents (actB['students']))
-        subjectB = formatSubject (actB['subject'])
-        tagsB = ', '.join(filterTags (actB['tags']))
-        roomB = formatRoom (actB ['room'])
+        subjectB  = formatSubject (actB['subject'])
+        tagsB     = ', '.join(filterTags (actB['tags']))
+        roomB     = formatRoom (actB ['room'])
+
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
                '}' + '\\\\' + studentsA + ' ' + roomA +  '}{' + roomB +
                ' ' + studentsB + '\\\\' + subjectB + '\\textsubscript{' +
                tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
-        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        actA      = r_dict['activities'][list(d_dict[hA])[0]]
         studentsA = ', '.join(filterStudents(actA['students']))
-        subjectA = formatSubject (actA['subject'])
-        tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = formatRoom (actA ['room'])
+        subjectA  = formatSubject (actA['subject'])
+        tagsA     = ', '.join(filterTags (actA['tags']))
+        roomA     = formatRoom (actA ['room'])
         durationA = actA ['duration']
+        
         if durationA == 2:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                    '}{\\formatdh{' + subjectA + '\\textsubscript{' + tagsA +
@@ -479,26 +484,28 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\cellcolor{emptycellcolor}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
-        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        actB      = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
-        subjectB = formatSubject (actB['subject'])
-        tagsB = ', '.join(filterTags(actB['tags']))
-        roomB = formatRoom (actB ['room'])
+        subjectB  = formatSubject (actB['subject'])
+        tagsB     = ', '.join(filterTags(actB['tags']))
+        roomB     = formatRoom (actB ['room'])
+
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{}{' + roomB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
-        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        actA      = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
-        subjectA = formatSubject (actA['subject'])
-        tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = formatRoom (actA ['room'])
-        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        subjectA  = formatSubject (actA['subject'])
+        tagsA     = ', '.join(filterTags (actA['tags']))
+        roomA     = formatRoom (actA ['room'])
+        actB      = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join (filterTeachers(actB['teachers']))
-        subjectB = formatSubject (actB['subject'])
-        tagsB = ', '.join(filterTags (actB['tags']))
-        roomB = formatRoom (actB ['room'])
+        subjectB  = formatSubject (actB['subject'])
+        tagsB     = ', '.join(filterTags (actB['tags']))
+        roomB     = formatRoom (actB ['room'])
+
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
                '}' + '\\\\' + teachersA +
@@ -507,12 +514,13 @@ def Gen_Subgroup_H_Data (d, d_dict, h):
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
-        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        actA      = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
-        subjectA = formatSubject (actA['subject'])
-        tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = formatRoom (actA ['room'])
+        subjectA  = formatSubject (actA['subject'])
+        tagsA     = ', '.join(filterTags (actA['tags']))
+        roomA     = formatRoom (actA ['room'])
         durationA = actA ['duration']
+
         if durationA == 2:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                    '}{\\formatdh{' + subjectA + '\\textsubscript{' +
@@ -551,28 +559,30 @@ def Gen_Room_H_Data (d, d_dict, h):
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\cellcolor{emptycellcolor}}')
     elif len (d_dict[hA]) == 0 and len (d_dict[hB]) >= 1:
-        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        actB      = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         studentsB = ', '.join(filterStudents(actB['students']))
-        subjectB = formatSubject (actB['subject'])
-        tagsB = ', '.join(filterTags(actB['tags']))
+        subjectB  = formatSubject (actB['subject'])
+        tagsB     = ', '.join(filterTags(actB['tags']))
+
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{}{' + studentsB + '\\\\' + teachersB +
                ('\\\\' if len(teachersB) > 0 else '') +
                subjectB + '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) >= 1:
-        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        actA      = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         studentsA = ', '.join(filterStudents(actA['students']))
-        subjectA = formatSubject (actA['subject'])
-        tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = actA ['room']
-        actB = r_dict['activities'][list(d_dict[hB])[0]]
+        subjectA  = formatSubject (actA['subject'])
+        tagsA     = ', '.join(filterTags (actA['tags']))
+        roomA     = actA ['room']
+        actB      = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         studentsB = ', '.join(filterStudents(actB['students']))
-        subjectB = formatSubject (actB['subject'])
-        tagsB = ', '.join(filterTags (actB['tags']))
-        roomB = actB ['room']
+        subjectB  = formatSubject (actB['subject'])
+        tagsB     = ', '.join(filterTags (actB['tags']))
+        roomB     = actB ['room']
+
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
                '}' + '\\\\' + teachersA +
@@ -581,13 +591,14 @@ def Gen_Room_H_Data (d, d_dict, h):
                ('\\\\' if len(teachersB) > 0 else '') + subjectB +
                '\\textsubscript{' + tagsB + '}' + '}}')
     elif len (d_dict[hA]) >= 1 and len (d_dict[hB]) == 0:
-        actA = r_dict['activities'][list(d_dict[hA])[0]]
+        actA      = r_dict['activities'][list(d_dict[hA])[0]]
         teachersA = '\\\\'.join(filterTeachers(actA['teachers'], True))
         studentsA = ', '.join(filterStudents(actA['students']))
-        subjectA = formatSubject (actA['subject'])
-        tagsA = ', '.join(filterTags (actA['tags']))
-        roomA = actA ['room']
+        subjectA  = formatSubject (actA['subject'])
+        tagsA     = ', '.join(filterTags (actA['tags']))
+        roomA     = actA ['room']
         durationA = actA ['duration']
+
         if durationA == 2:
             print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                    '}{\\formatdh{' + subjectA + '\\textsubscript{' + tagsA +
@@ -618,6 +629,19 @@ def Gen_Room_D_Data (d, d_dict):
     Gen_Room_H_Data (d, d_dict, '10:30 - 12:30')
     Gen_Room_H_Data (d, d_dict, '14:00 - 16:00')
     Gen_Room_H_Data (d, d_dict, '16:15 - 18:15')
+
+def commonPrologue ():
+    print ('\\input{common_header.tex}')
+    print ('\\newcommand{\\institution}{'       + institution    + '}')
+    print ('\\newcommand{\\dpt}{'               + department     + '}')
+    print ('\\newcommand{\\dirdpt}{'            + departmenthead + '}')
+    print ('\\newcommand{\\anneescolaire}{'     + academicyear   + '}')
+    print ('\\newcommand{\\semestre}{Semestre ' + semester       + '}')
+    print ('\\newcommand{\\fetversion}{'        + fetversion     + '}')
+    print ('\\newcommand{\\gendate}{'           + gendate        + '}')
+
+def commonEpilogue ():
+    print ('\\input{common_footer.tex}')
 
 def genPDF (f, out_dir):
     """Generate a PDF file from the fiven .tex file. The generation occurs
@@ -662,13 +686,9 @@ def Gen_Teacher_TT_Data (t):
     f = open (tex_dir + '/' + t + '.tex', 'w')
     sys.stdout = f
     
-    print ('\\input{common_header.tex}')
+    commonPrologue ()
+
     print ('\\newcommand{\\teacher}{' + t_name + '}')
-    print ('\\newcommand{\\institution}{' + institution + '}')
-    print ('\\newcommand{\\dpt}{' + department + '}')
-    print ('\\newcommand{\\dirdpt}{' + departmenthead + '}')
-    print ('\\newcommand{\\anneescolaire}{' + academicyear + '}')
-    print ('\\newcommand{\\semestre}{Semestre ' + semester + '}')
     print ('\\newcommand{\\semestrepartie}{' + suffix + '}')
     print ('\\newcommand{\\fulltitle}{\\teacher{}\\semestrepartie{}}')
     print ('\\newcommand{\\teachersign}{{\\bf Signature de l\'enseignant}' +
@@ -677,7 +697,8 @@ def Gen_Teacher_TT_Data (t):
            'département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
     for d in tt_dict:
         Gen_Teacher_D_Data (d, tt_dict [d])
-    print ('\\input{common_footer.tex}')
+
+    commonEpilogue ()
 
     # Restore stdout
     sys.stdout = orig_stdout
@@ -706,12 +727,8 @@ def Gen_Subgroup_TT_Data (sg):
     f = open (tex_dir + '/' + sg + '.tex', 'w')
     sys.stdout = f
 
-    print ('\\input{common_header.tex}')
-    print ('\\newcommand{\\institution}{' + institution + '}')
-    print ('\\newcommand{\\dpt}{' + department + '}')
-    print ('\\newcommand{\\dirdpt}{' + departmenthead + '}')
-    print ('\\newcommand{\\anneescolaire}{' + academicyear + '}')
-    print ('\\newcommand{\\semestre}{Semestre ' + semester + '}')
+    commonPrologue ()
+
     print ('\\newcommand{\\fulltitle}{Section ' + s_name + ' Groupe '
            + g_name + '}')
     print ('\\newcommand{\\teachersign}{}')
@@ -719,7 +736,8 @@ def Gen_Subgroup_TT_Data (sg):
            'de département \\dpt{}}\\\\{\\bf \\dirdpt{}}}')
     for d in tt_dict:
         Gen_Subgroup_D_Data (d, tt_dict [d])
-    print ('\\input{common_footer.tex}')
+
+    commonEpilogue ()
 
     # Restore stdout
     sys.stdout = orig_stdout
@@ -749,18 +767,15 @@ def Gen_Room_TT_Data (r):
     f = open (tex_dir + '/' + r + '.tex', 'w')
     sys.stdout = f
 
-    print ('\\input{common_header.tex}')
-    print ('\\newcommand{\\institution}{' + institution + '}')
-    print ('\\newcommand{\\dpt}{' + department + '}')
-    print ('\\newcommand{\\dirdpt}{' + departmenthead + '}')
-    print ('\\newcommand{\\anneescolaire}{' + academicyear + '}')
-    print ('\\newcommand{\\semestre}{Semestre ' + semester + '}')
+    commonPrologue ()
+
     print ('\\newcommand{\\fulltitle}{Salle ' + r + '}')
     print ('\\newcommand{\\teachersign}{}')
     print ('\\newcommand{\\dirdptsign}{}')
     for d in tt_dict:
         Gen_Room_D_Data (d, tt_dict [d])
-    print ('\\input{common_footer.tex}')
+
+    commonEpilogue ()
 
     # Restore stdout
     sys.stdout = orig_stdout
@@ -774,7 +789,29 @@ def tryExtractInfos (f):
        file.
     """
 
-    pass
+    # Get the absolute pathname of the file
+    abs_path = os.path.abspath (f)
+
+    # Get the directry of the file
+    dir_name = os.path.dirname (abs_path)
+
+    # Check if there is a file named 
+    conflict_files = glob.glob (dir_name + os.sep + '*_soft_conflicts.txt')
+
+    if len (conflict_files) == 0:
+        return None
+
+    with open (conflict_files[0]) as cf:
+        for line in cf:
+            # Try to extract FET version and generation date
+            res = re.findall(r'FET ([0-9]+.[0-9]+.[0-9]+)' +
+                             '[^0-9]+([0-9]+/[0-9]+/[0-9]+ [0-9]+:[0-9]+)',
+                             line)
+
+            if len (res) > 0:
+                return res
+
+    return None
 
 # Main program
 
@@ -832,9 +869,17 @@ if __name__ == '__main__':
     os.makedirs (sgrp_dir, exist_ok = True)
     os.makedirs (room_dir, exist_ok = True)
 
+    # Extract Generation information
+    
+    fet_infos = tryExtractInfos (input_file)
+
+    if fet_infos:
+        fetversion = fet_infos [0][0]
+        gendate    = fet_infos [0][1]
+
     # Generate the time tables
 
-    stopAfterOne = True
+    stopAfterOne = False
     # For testing purpose only to generate only one timetable from
     # each kind.
     
