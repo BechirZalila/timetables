@@ -771,8 +771,9 @@ if __name__ == '__main__':
 
     # Generate the time tables
 
-    stopAfterOne = False # For testing purpose only to generate only
-                        # one timetable from each kind.
+    stopAfterOne = False
+    # For testing purpose only to generate only one timetable from
+    # each kind.
     
     for t in r_dict['teachers']:
         Gen_Teacher_TT_Data (t)
