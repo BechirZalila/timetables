@@ -20,7 +20,11 @@ departmenthead = '\\incomplete{Dpt Head}'
 academicyear   = '\\incomplete{XXXX-YYYY}'
 semester       = '\\incomplete{Z}'
 fetversion     = '\\incomplete{X.Y.Z}'
-gendate        = '\\incomplete{DD/MM/YYY HH:MM}'
+gendate        = ['\\incomplete{JJ}',
+                  '\\incomplete{MM}',
+                  '\\incomplete{YYYY}',
+                  '\\incomplete{hh}',
+                  '\\incomplete{mm}']
 
 def printInfos (elt):
     print ("Tag: <" + elt.tag + ">")
@@ -638,7 +642,11 @@ def commonPrologue ():
     print ('\\newcommand{\\anneescolaire}{'     + academicyear   + '}')
     print ('\\newcommand{\\semestre}{Semestre ' + semester       + '}')
     print ('\\newcommand{\\fetversion}{'        + fetversion     + '}')
-    print ('\\newcommand{\\gendate}{'           + gendate        + '}')
+    print ('\\newcommand{\\gendateDD}{'         + gendate [0]    + '}')
+    print ('\\newcommand{\\gendateMM}{'         + gendate [1]    + '}')
+    print ('\\newcommand{\\gendateYYYY}{'       + gendate [2]    + '}')
+    print ('\\newcommand{\\gendatehh}{'         + gendate [3]    + '}')
+    print ('\\newcommand{\\gendatemm}{'         + gendate [4]    + '}')
 
 def commonEpilogue ():
     print ('\\input{common_footer.tex}')
@@ -805,7 +813,8 @@ def tryExtractInfos (f):
         for line in cf:
             # Try to extract FET version and generation date
             res = re.findall(r'FET ([0-9]+.[0-9]+.[0-9]+)' +
-                             '[^0-9]+([0-9]+/[0-9]+/[0-9]+ [0-9]+:[0-9]+)',
+                             '[^0-9]+([0-9]+)/([0-9]+)/([0-9]+)' +
+                             ' ([0-9]+):([0-9]+)',
                              line)
 
             if len (res) > 0:
@@ -875,7 +884,11 @@ if __name__ == '__main__':
 
     if fet_infos:
         fetversion = fet_infos [0][0]
-        gendate    = fet_infos [0][1]
+        gendate    = [fet_infos [0][1], # JJ
+                      fet_infos [0][2], # MM
+                      fet_infos [0][3], # YYYY
+                      fet_infos [0][4], # hh
+                      fet_infos [0][5]] # mm
 
     # Generate the time tables
 
