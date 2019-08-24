@@ -26,6 +26,14 @@ gendate        = ['\\incomplete{JJ}',
                   '\\incomplete{hh}',
                   '\\incomplete{mm}']
 
+# IMPORTANT: The XML file must have hour-labels identical to those
+#            above or suffixed with ' A' or ' B'.
+
+cren_1 = '08:15 - 10:00'
+cren_2 = '10:15 - 12:00'
+cren_3 = '14:00 - 15:45'
+cren_4 = '16:00 - 17:45'
+
 def printInfos (elt):
     print ("Tag: <" + elt.tag + ">")
     print ("Text: <" + elt.text + ">")
@@ -332,18 +340,18 @@ tt_d_trans = {
 }
 
 tt_h_trans = {
-    '08:15 - 10:00'   : 'one',
-    '08:15 - 10:00 A' : 'one',
-    '08:15 - 10:00 B' : 'one',
-    '10:15 - 12:00'   : 'two',
-    '10:15 - 12:00 A' : 'two',
-    '10:15 - 12:00 B' : 'two',
-    '14:00 - 15:45'   : 'three',
-    '14:00 - 15:45 A' : 'three',
-    '14:00 - 15:45 B' : 'three',
-    '16:00 - 17:45'   : 'four',
-    '16:00 - 17:45 A' : 'four',
-    '16:00 - 17:45 B' : 'four'
+    cren_1        : 'one',
+    cren_1 + ' A' : 'one',
+    cren_1 + ' B' : 'one',
+    cren_2        : 'two',
+    cren_2 + ' A' : 'two',
+    cren_2 + ' B' : 'two',
+    cren_3        : 'three',
+    cren_3 + ' A' : 'three',
+    cren_3 + ' B' : 'three',
+    cren_4        : 'four',
+    cren_4 + ' A' : 'four',
+    cren_4 + ' B' : 'four'
 }
 
 def commonFormat (s, ):
@@ -617,22 +625,22 @@ def Gen_Room_H_Data (d, d_dict, h):
         raise Exception ('Gen_Room_H_Data', actA)
 
 def Gen_Teacher_D_Data (d, d_dict):
-    Gen_Teacher_H_Data (d, d_dict, '08:15 - 10:15')
-    Gen_Teacher_H_Data (d, d_dict, '10:30 - 12:30')
-    Gen_Teacher_H_Data (d, d_dict, '14:00 - 16:00')
-    Gen_Teacher_H_Data (d, d_dict, '16:15 - 18:15')
+    Gen_Teacher_H_Data (d, d_dict, cren_1)
+    Gen_Teacher_H_Data (d, d_dict, cren_2)
+    Gen_Teacher_H_Data (d, d_dict, cren_3)
+    Gen_Teacher_H_Data (d, d_dict, cren_4)
 
 def Gen_Subgroup_D_Data (d, d_dict):
-    Gen_Subgroup_H_Data (d, d_dict, '08:15 - 10:15')
-    Gen_Subgroup_H_Data (d, d_dict, '10:30 - 12:30')
-    Gen_Subgroup_H_Data (d, d_dict, '14:00 - 16:00')
-    Gen_Subgroup_H_Data (d, d_dict, '16:15 - 18:15')
+    Gen_Subgroup_H_Data (d, d_dict, cren_1)
+    Gen_Subgroup_H_Data (d, d_dict, cren_2)
+    Gen_Subgroup_H_Data (d, d_dict, cren_3)
+    Gen_Subgroup_H_Data (d, d_dict, cren_4)
 
 def Gen_Room_D_Data (d, d_dict):
-    Gen_Room_H_Data (d, d_dict, '08:15 - 10:15')
-    Gen_Room_H_Data (d, d_dict, '10:30 - 12:30')
-    Gen_Room_H_Data (d, d_dict, '14:00 - 16:00')
-    Gen_Room_H_Data (d, d_dict, '16:15 - 18:15')
+    Gen_Room_H_Data (d, d_dict, cren_1)
+    Gen_Room_H_Data (d, d_dict, cren_2)
+    Gen_Room_H_Data (d, d_dict, cren_3)
+    Gen_Room_H_Data (d, d_dict, cren_4)
 
 def commonPrologue ():
     print ('\\input{common_header.tex}')
