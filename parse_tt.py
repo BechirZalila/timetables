@@ -308,18 +308,32 @@ def P_ConstraintActivityPreferredRoom (elt):
     
     if active (elt):
         a_id = getPropertyText (elt, 'Activity_Id')
-        room = getPropertyText (elt, 'Room')
+        rooms = [] # List to support multiple rooms
+        is_virtual = elt.find ('Number_of_Real_Rooms') != None
         day = r_dict ['activities'][a_id]['day']
         hour = r_dict ['activities'][a_id]['hour']
 
-        # Update the activity room. This will update automaticlly the
+        # If the room is virtual, get the real rooms instead
+        if is_virtual:
+            # Inner function to get all the real rooms of the visrtual
+            # room
+            def P_Real_Room (elt):
+                rooms.append (elt.text)
+                
+            Tree_Parse (elt, {'Real_Room': P_Real_Room})
+            
+        else:
+            rooms.append (getPropertyText (elt, 'Room'))
+
+        # Update the corresponding room(s) time table
+        for r in rooms:
+            r_dict ['rooms'][r]['timetable'][day][hour].add(a_id)
+
+        # Update the activity room(s). This will update automaticlly the
         # corresponding teacher(s) and student group(s) time tables as
         # these store only the activity Id an not a copy of the
         # activity.
-        r_dict ['activities'][a_id]['room'] = room
-
-        # Update the corresponding room time table
-        r_dict ['rooms'][room]['timetable'][day][hour].add(a_id)
+        r_dict ['activities'][a_id]['room'] = rooms
     
 def P_Space_Constraints_List (elt):
     Tree_Parse (elt, {'ConstraintActivityPreferredRoom' :
@@ -358,8 +372,10 @@ def commonFormat (s, ):
     # In Latex all '_' must be escaped in standard mode
     return s.replace ('_', '\_')
 
-def formatRoom (room):
-    return '\\formatroom{' + commonFormat (room) + '}'
+def formatRoom (rooms):
+    # Rooms is a list
+    rooms_str = ', '.join (rooms)
+    return '\\formatroom{' + commonFormat (rooms_str) + '}'
 
 def formatSubject (subject):
     return '\\formatsubject{' + commonFormat (subject) + '}'
@@ -587,14 +603,13 @@ def Gen_Room_H_Data (d, d_dict, h):
         studentsA = ', '.join(filterStudents(actA['students']))
         subjectA  = formatSubject (actA['subject'])
         tagsA     = ', '.join(filterTags (actA['tags']))
-        roomA     = actA ['room']
+        
         actB      = r_dict['activities'][list(d_dict[hB])[0]]
         teachersB = '\\\\'.join(filterTeachers(actB['teachers']))
         studentsB = ', '.join(filterStudents(actB['students']))
         subjectB  = formatSubject (actB['subject'])
         tagsB     = ', '.join(filterTags (actB['tags']))
-        roomB     = actB ['room']
-
+        
         print ('\\newcommand{\\' + tt_d_trans[d] + tt_h_trans[h] +
                '}{\\formatdhh{' + subjectA + '\\textsubscript{' + tagsA +
                '}' + '\\\\' + teachersA +
@@ -608,7 +623,6 @@ def Gen_Room_H_Data (d, d_dict, h):
         studentsA = ', '.join(filterStudents(actA['students']))
         subjectA  = formatSubject (actA['subject'])
         tagsA     = ', '.join(filterTags (actA['tags']))
-        roomA     = actA ['room']
         durationA = actA ['duration']
 
         if durationA == 2:
