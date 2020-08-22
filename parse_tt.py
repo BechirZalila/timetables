@@ -374,8 +374,14 @@ def commonFormat (s, ):
 
 def formatRoom (rooms):
     # Rooms is a list
-    rooms_str = ', '.join (rooms)
-    return '\\formatroom{' + commonFormat (rooms_str) + '}'
+    if rooms != None:
+        rooms_str = ', '.join (rooms)
+        return '\\formatroom{' + commonFormat (rooms_str) + '}'
+    else:
+        rooms_str = 'NONE'
+        return '\\formatnoroom{' + commonFormat (rooms_str) + '}'
+
+
 
 def formatSubject (subject):
     return '\\formatsubject{' + commonFormat (subject) + '}'
