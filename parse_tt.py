@@ -29,10 +29,15 @@ gendate        = ['\\incomplete{JJ}',
 # IMPORTANT: The XML file must have hour-labels identical to those
 #            above or suffixed with ' A' or ' B'.
 
-cren_1 = '08:15 - 10:00'
-cren_2 = '10:15 - 12:00'
-cren_3 = '14:00 - 15:45'
-cren_4 = '16:00 - 17:45'
+#cren_1 = '08:15 - 10:00'
+#cren_2 = '10:15 - 12:00'
+#cren_3 = '14:00 - 15:45'
+#cren_4 = '16:00 - 17:45'
+
+cren_1 = '08:15 - 10:15'
+cren_2 = '10:30 - 12:30'
+cren_3 = '14:00 - 16:00'
+cren_4 = '16:15 - 18:15'
 
 def printInfos (elt):
     print ("Tag: <" + elt.tag + ">")
