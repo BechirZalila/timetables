@@ -720,18 +720,26 @@ def Gen_Teacher_TT_Data (t):
         t_name = t [:space]
         suffix = t [space:]
 
+    # Final value of suffix and file name
+
+    if len(suffix) > 0:
+        suffix = 'Partie' + suffix
+        tex_name = t_name + ' - ' + suffix
+    else:
+        tex_name = t_name
+
     # Instead of passing the file as argument. We temporarily redirect
     # stdout to the .tex file and using print to generate its content.
     
     orig_stdout = sys.stdout
-    f = open (tex_dir + '/' + t + '.tex', 'w')
+    f = open (tex_dir + '/' + tex_name + '.tex', 'w')
     sys.stdout = f
     
     commonPrologue ()
 
     print ('\\newcommand{\\teacher}{' + t_name + '}')
     print ('\\newcommand{\\semestrepartie}{' + suffix + '}')
-    print ('\\newcommand{\\fulltitle}{\\teacher{}\\semestrepartie{}}')
+    print ('\\newcommand{\\fulltitle}{\\teacher{} \\semestrepartie{}}')
     print ('\\newcommand{\\teachersign}{{\\bf Signature de l\'enseignant}' +
            '\\\\{\\bf \\teacher{}}}')
     print ('\\newcommand{\\dirdptsign}{{\\bf Signature du directeur de ' +
@@ -745,7 +753,7 @@ def Gen_Teacher_TT_Data (t):
     sys.stdout = orig_stdout
 
     f.close()
-    genPDF (t, tchr_dir)
+    genPDF (tex_name, tchr_dir)
 
 def Gen_Subgroup_TT_Data (sg):
     """Produce a .tex file representing the time table of the given
