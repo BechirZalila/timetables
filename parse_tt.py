@@ -416,9 +416,12 @@ def trimTeacher (t):
 def filterTeachers (teachers, rev = False):
     # Do not include ficticious teachers who are here only for the
     # sake of FET.
+
+    # We put the teachers first in a set to automatically remove
+    # duplicates
     
-    l = [formatTeacher (trimTeacher (t))
-            for t in teachers if t.find (fict_tch) == -1]
+    l = list ({formatTeacher (trimTeacher (t))
+            for t in teachers if t.find (fict_tch) == -1})
     l.sort (key = lambda s: len (s), reverse = rev)
     return l
 
