@@ -81,7 +81,7 @@ def P_Unknown (elt):
     #print ("Unknown element: <" + elt.tag + ">")
 
 def Tree_Parse (elt, tree_dict):
-    for e in elt.getchildren():
+    for e in list (elt):
         if tree_dict.get(e.tag):
             tree_dict.get(e.tag)(e)
         else:

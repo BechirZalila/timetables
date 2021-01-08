@@ -34,19 +34,22 @@
   {\LARGE \bf \fulltitle{}}
 \end{center}
   
-\newcolumntype{D}    { >{\centering\arraybackslash} m{2cm} }
-\newcolumntype{H}    { >{\centering\arraybackslash} m{5cm} }
-\newcolumntype{X}{@{}m{0pt}@{}} % Dummy column due to a bug in latex
+\newcolumntype{D} { >{\centering\arraybackslash}m{2cm}}
+\newcolumntype{H} { >{\vspace{-4ex}\centering\arraybackslash}m{5cm}}
+% Negative vspcae is to align the diagonal and text in cells
+
+\newcolumntype{X} {@{}m{0pt}@{}} % Dummy column due to a bug in latex
+
 \begin{center}
-  \begin{tabular}{|D||H|H||H|H|X}\hline
-                & \hourone{}     & \hourtwo{}     & \hourthree{}     & \hourfour{}     &\\[0.7cm]\hline
-    \lundi{}    & \lundione{}    & \lunditwo{}    & \lundithree{}    & \lundifour{}    &\\[1.5cm]\hline
-    \mardi{}    & \mardione{}    & \marditwo{}    & \mardithree{}    & \mardifour{}    &\\[1.5cm]\hline
-    \mercredi{} & \mercredione{} & \mercreditwo{} & \mercredithree{} & \mercredifour{} &\\[1.5cm]\hline
-    \jeudi{}    & \jeudione{}    & \jeuditwo{}    & \jeudithree{}    & \jeudifour{}    &\\[1.5cm]\hline
-    \vendredi{} & \vendredione{} & \vendreditwo{} & \vendredithree{} & \vendredifour{} &\\[1.5cm]\hline
-    \samedi{}   & \samedione{}   & \sameditwo{}   & \samedithree{}   & \samedifour{}   &\\[1.5cm]\hline
-    \multicolumn{5}{|c|}{{\tiny \footmessage{}}} &\\\hline
+  \begin{tabular}{|D||H|H||H|H|X}\hline \rule{0pt}{0.8cm}
+                & \hourone{}     & \hourtwo{}     & \hourthree{}     & \hourfour{}     &\tabularnewline \hline  \rule{0pt}{1.8cm}
+    \lundi{}    & \lundione{}    & \lunditwo{}    & \lundithree{}    & \lundifour{}    &\tabularnewline \hline  \rule{0pt}{1.8cm}
+    \mardi{}    & \mardione{}    & \marditwo{}    & \mardithree{}    & \mardifour{}    &\tabularnewline \hline  \rule{0pt}{1.8cm}
+    \mercredi{} & \mercredione{} & \mercreditwo{} & \mercredithree{} & \mercredifour{} &\tabularnewline \hline  \rule{0pt}{1.8cm}
+    \jeudi{}    & \jeudione{}    & \jeuditwo{}    & \jeudithree{}    & \jeudifour{}    &\tabularnewline \hline  \rule{0pt}{1.8cm}
+    \vendredi{} & \vendredione{} & \vendreditwo{} & \vendredithree{} & \vendredifour{} &\tabularnewline \hline  \rule{0pt}{1.8cm}
+    \samedi{}   & \samedione{}   & \sameditwo{}   & \samedithree{}   & \samedifour{}   &\tabularnewline[1cm]\hline
+    \multicolumn{5}{|c|}{{\tiny \footmessage{}}}                                       &\tabularnewline\hline
   \end{tabular}
 \end{center}
 
@@ -54,7 +57,7 @@
 \newcolumntype{R} { >{\arraybackslash} m{11cm} }
 \begin{center}
   \begin{tabular}{R L X}
-    \makecell[l]{\teachersign{}} & \makecell[r]{\dirdptsign{}} &\\
+    \makecell[l]{\teachersign{}} & \makecell[r]{\dirdptsign{}} &\tabularnewline
   \end{tabular}
 \end{center}
 
